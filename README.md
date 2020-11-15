@@ -2,7 +2,7 @@
 
 # Expose im Rahmen des Entwicklungsprojekts von Markus Mohr-Dama und Sophia Johannsen <p>
 
-Problemraum<br>
+### Problemraum<br>
 Im Rahmen des Entwicklungsprojekts soll der Problemraum des nachhaltigen Einkaufens<br>
 von Lebensmitteln, Drogerie und Kleidung behandelt werden. Die Schwierigkeiten die sich<br>
 dabei ergeben sind zum einen, eine unüberblickbare Menge von Siegeln zum nachhaltigen<br>
@@ -19,7 +19,8 @@ umweltfreundlich ist. Dazu zählt auch, dass Unternehmen häufig ihre eigenen<br
 Nachhaltigkeitssiegel erfinden, die nicht von einer offiziellen Vergabestelle bestätigt wurden.[4]
 <p>
 <p> 
-Zielsetzung<br>
+  
+### Zielsetzung<br>
 Das Projekt soll das Treffen nachhaltiger Konsumentscheidungen vereinfachen. Auch<br>
 Greenwashing soll erkennbar werden. Dazu sollen, vor allem bei größeren Konzernen,<br>
 darauf hingewiesen werden, falls andere Teile des Konzerns im Widerspruch zu<br>
@@ -32,7 +33,8 @@ verschieden Biosiegel und Nachhaltigkeitszertifikate zu vergleichen und bewerten
 gewünscht, sollen alternative Produkte vorgeschlagen werden.
 <p>
 <p>
-Relevanz<br>
+  
+### Relevanz<br>
 Studien der Verbraucherzentrale zeigen, dass Konsumierende sich mehr Klarheit bei der<br>
 Kennzeichnung von Lebensmitteln wünschen.[5] Auch bezüglich Biosiegel und<br>
 Nachhaltigkeitszertifikaten weist eine Studie der Utopia GmbH auf, dass Verbrauchende sich<br>
@@ -51,7 +53,19 @@ zukünftiger Generation.[8]
 <p>
 <p>
 <p>
-Literatur:<br>
+ 
+________________<br>
+[1] vgl. LUBW Landesanstalt für Umwelt Baden-Württemberg 2020<br>
+[2] vgl. Bund für Umwelt und Naturschutz Deutschland e.V. (BUND) – Friends of the Earth Germany 2020<br>
+[3] Hoffmann 2020<br>
+[4] Witzel 2019<br>
+[5] vgl. Kühl et al., 2017<br>
+[6] vgl. Utopia GmbH, 2019<br>
+[7] vgl. Hoffman and Oxfam GB 2013<br>
+[8] vgl. Bund für Umwelt und Naturschutz Deutschland e.V. 2019<br>
+
+  
+### Literatur<br>
 Bund für Umwelt und Naturschutz Deutschland e.V. 2019. Wie wir alle gut auf der Erde leben können. Berlin: n.p.<br> https://www.bund.net/fileadmin/user_upload_bund/publikationen/nachhaltigkeit/nachhaltigkeit_gutes_leben_sdgs.pdf.<br>
 Bund für Umwelt und Naturschutz Deutschland e.V. (BUND) – Friends of the Earth German. 2020. “Mit Brief und (Bio-)Siegel: Welche Kennzeichnung von Lebensmitteln ist<br> empfehlenswert?” Bio-Siegel. https://www.bund.net/massentierhaltung/haltungskennzeichnung/bio-siegel/.<br>
 Hoffman, Beth, and Oxfam GB. 2013. Behind the Brands. Oxford: Oxfam International. https://www.oxfam.de/system/files/studie_behind_the_brands_260213.pdf.<br>
@@ -65,12 +79,3 @@ Witzel, Annika. 2019. “Darum ist Greenwashing ein Problem.” Quarks. https://
 <p>
 <p>
 <p>
-________________<br>
-[1] vgl. LUBW Landesanstalt für Umwelt Baden-Württemberg 2020<br>
-[2] vgl. Bund für Umwelt und Naturschutz Deutschland e.V. (BUND) – Friends of the Earth Germany 2020<br>
-[3] Hoffmann 2020<br>
-[4] Witzel 2019<br>
-[5] vgl. Kühl et al., 2017<br>
-[6] vgl. Utopia GmbH, 2019<br>
-[7] vgl. Hoffman and Oxfam GB 2013<br>
-[8] vgl. Bund für Umwelt und Naturschutz Deutschland e.V. 2019<br>
