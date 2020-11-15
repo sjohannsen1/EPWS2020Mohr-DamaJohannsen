@@ -1,6 +1,6 @@
 # EPWS2020Mohr-DamaJohannsen
 
-# Expose im Rahmen des Entwicklungsprojekts von Markus Mohr-Dama und Sophia Johannsen <p>
+## Expose im Rahmen des Entwicklungsprojekts von Markus Mohr-Dama und Sophia Johannsen <p>
 
 ### Problemraum<br>
 Im Rahmen des Entwicklungsprojekts soll der Problemraum des nachhaltigen Einkaufens<br>
