@@ -30,7 +30,7 @@ Zertifikaten und Siegeln, sowie undurchsichtigen Firmen und Kennzeichnungen. Des
 Weiteren soll auf nicht kennzeichnungspflichtige Zusätze hingewiesen werden, die<br>
 möglicherweise in dem Produkt eingesetzt wurden. Außerdem soll es die Möglichkeit bieten,<br>
 verschieden Biosiegel und Nachhaltigkeitszertifikate zu vergleichen und bewerten. Falls<br>
-gewünscht, sollen alternative Produkte vorgeschlagen werden.
+gewünscht, sollen alternative Produkte vorgeschlagen werden. Konkret soll dies bei diesem Projekt über eine mobile Anwendung, welche Barcodes einlesen kann, realisiert werden.
 <p>
 <p>
   
