@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.JsonReader
 import android.util.Log
 import android.widget.Toast
 
@@ -11,11 +12,9 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.Polyline
-import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.*
 import com.google.maps.android.SphericalUtil
+import com.google.maps.android.data.geojson.GeoJsonFeature
 import com.google.maps.android.data.geojson.GeoJsonLayer
 import org.json.JSONObject
 import kotlin.math.roundToInt
@@ -34,6 +33,7 @@ val  mongo = App(AppConfiguration.Builder(BuildConfig.MONGODB_REALM_APP_ID)
 private val latGermany=51.5167
 private val lngGermany=9.9167
 val germany = LatLng(latGermany, lngGermany)
+val germanyArea=R.raw.germany
 
 enum class TaskStatus(val displayName: String) {
     Open("Open"),
@@ -77,7 +77,7 @@ fun authenticateUser() {
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
-    var countries= listOf(R.raw.brazil, R.raw.australia, R.raw.greece)
+    var countries= listOf(R.raw.brazil,  R.raw.greece,R.raw.australia)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Realm.init(this)
@@ -94,18 +94,29 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     fun addOutline(map: GoogleMap,herkunft:List<Int>){
         herkunft.forEach{
             val layer = GeoJsonLayer(map, it, this)
+            layer.defaultPolygonStyle.strokeWidth=0.0f
+            layer.defaultPolygonStyle.fillColor=Color.DKGRAY
             layer.addLayerToMap()
             //wenn Land angeklickt wird sollen routen angezeigt werden
-            layer.setOnFeatureClickListener{ startActivity(Intent(this, RouteActivity::class.java))}
+            layer.setOnFeatureClickListener{ startActivity(Intent(this, RouteActivity::class.java))
+            }
 
         }
+
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        addOutline(mMap,countries)
-        // Add a marker in Germany
-        mMap.addMarker(MarkerOptions().position(germany).title("Marker in Germany"))
+        //Karte reduzieren
+        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this,R.raw.map_style))
+
+        // Marker in Deutschland hinzufügen und Land markieren
+        mMap.addMarker(MarkerOptions().position(germany).title("Deutschland"))
+        val layerGermany= GeoJsonLayer(mMap, germanyArea, this)
+        layerGermany.defaultPolygonStyle.strokeWidth=0.0f
+        layerGermany.defaultPolygonStyle.fillColor=Color.LTGRAY
+        layerGermany.addLayerToMap()
         mMap.moveCamera(CameraUpdateFactory.zoomOut())
+        addOutline(mMap,countries)
     }
 }
