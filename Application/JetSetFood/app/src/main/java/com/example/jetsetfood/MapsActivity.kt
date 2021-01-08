@@ -29,7 +29,7 @@ import io.realm.mongodb.Credentials
 import io.realm.mongodb.User
 import org.bson.types.ObjectId
 //mongo
-val  mongo = App(AppConfiguration.Builder("thkrealm-fxaij")
+val  mongo = App(AppConfiguration.Builder(BuildConfig.MONGODB_REALM_APP_ID)
     .build())
 private val latGermany=51.5167
 private val lngGermany=9.9167
@@ -73,13 +73,11 @@ fun authenticateUser() {
         }
     }
 }
+
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
-
-
-
     private lateinit var mMap: GoogleMap
-
+    var countries= listOf(R.raw.brazil, R.raw.australia, R.raw.greece)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Realm.init(this)
@@ -93,27 +91,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
+    fun addOutline(map: GoogleMap,herkunft:List<Int>){
+        herkunft.forEach{
+            val layer = GeoJsonLayer(map, it, this)
+            layer.addLayerToMap()
+            //wenn Land angeklickt wird sollen routen angezeigt werden
+            layer.setOnFeatureClickListener{ startActivity(Intent(this, RouteActivity::class.java))}
 
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
-
-    fun addOutline(geoJson: JSONObject){
-
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        val layer=GeoJsonLayer(mMap, R.raw.brazil, this)
-        layer.addLayerToMap()
-        layer.setOnFeatureClickListener { startActivity(Intent(this, RouteActivity::class.java))}
+        addOutline(mMap,countries)
         // Add a marker in Germany
         mMap.addMarker(MarkerOptions().position(germany).title("Marker in Germany"))
         mMap.moveCamera(CameraUpdateFactory.zoomOut())
