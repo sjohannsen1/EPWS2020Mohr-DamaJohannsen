@@ -1,0 +1,20 @@
+{
+  "type": "vegetables",
+  "id": "v3",
+  "name": "bell pepper",
+  "origin": [
+    {"month":"Jan", "land":["ESP","NLD", "TUR"]},
+    {"month":"Feb", "land":["ESP","NLD"]},
+    {"month":"Mär", "land":["ESP","NLD"]},
+    {"month":"Apr", "land":["ESP","NLD"]},
+    {"month":"Mai", "land":["TUR"]},
+    {"month":"Jun", "land":["TUR"]},
+    {"month":"Jul", "land":["ITA", "TUR"]},
+    {"month":"Aug", "land":["ITA", "TUR"]},
+    {"month":"Sep", "land":["ITA", "ESP", "NLD", "TUR"]},
+    {"month":"Okt", "land":["ITA", "ESP", "NLD", "TUR"]},
+    {"month":"Nov", "land":["ITA", "ESP", "NLD", "TUR"]},
+    {"month":"Dez", "land":["ESP","NLD", "TUR"]}
+  ]
+
+}

@@ -1,0 +1,20 @@
+{
+  "type": "fruit",
+  "id": "f2",
+  "name": "Raspberry",
+  "origin": [
+    {"month":"Jan", "land":["CHL", "NZL", "GTM", "USA", "MEX"]},
+    {"month":"Feb", "land":["CHL", "NZL", "GTM", "USA", "MEX"]},
+    {"month":"Mär", "land":["USA", "MEX"]},
+    {"month":"Apr", "land":[]},
+    {"month":"Mai", "land":[]},
+    {"month":"Jun", "land":["DEU"]},
+    {"month":"Jul", "land":["DEU"]},
+    {"month":"Aug", "land":["DEU"]},
+    {"month":"Sep", "land":["DEU"]},
+    {"month":"Okt", "land":[]},
+    {"month":"Nov", "land":["USA", "MEX"]},
+    {"month":"Dez", "land":["CHL", "NZL", "GTM", "USA", "MEX"]}
+  ]
+
+}
