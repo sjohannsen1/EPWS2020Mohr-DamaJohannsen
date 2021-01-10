@@ -1,0 +1,20 @@
+{
+  "type": "vegetables",
+  "id": "v2",
+  "name": "Okra",
+  "origin": [
+    {"month":"Jan", "land":["KEN", "THA"]},
+    {"month":"Feb", "land":["KEN", "THA"]},
+    {"month":"Mär", "land":["KEN", "THA"]},
+    {"month":"Apr", "land":["KEN", "THA"]},
+    {"month":"Mai", "land":["KEN", "THA"]},
+    {"month":"Jun", "land":["BRA"]},
+    {"month":"Jul", "land":["BRA"]},
+    {"month":"Aug", "land":["BRA"]},
+    {"month":"Sep", "land":["BRA", "KEN", "THA"]},
+    {"month":"Okt", "land":["KEN", "THA"]},
+    {"month":"Nov", "land":["KEN", "THA"]},
+    {"month":"Dez", "land":["KEN", "THA"]}
+  ]
+
+}
