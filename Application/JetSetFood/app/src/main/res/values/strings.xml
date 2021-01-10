@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">JetSetFood</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_maps">POC: Markierung der Länder</string>
     <string name="title_activity_poc__country">Highlight Country</string>
-    <string name="title_activity_route">Routes</string>
+    <string name="title_activity_route">POC: Routen</string>
+    <string name="title_activity_POC__Data_Req">POC: Eingabe und Saisonkalender</string>
+    <string name="produce_input">Obst oder Gemüsesorte</string>
+    <string name="produce_enter">Herkunft herausfinden</string>
 </resources>
