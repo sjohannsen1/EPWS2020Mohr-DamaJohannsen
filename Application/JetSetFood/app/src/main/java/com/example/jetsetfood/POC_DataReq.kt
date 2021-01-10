@@ -1,9 +1,8 @@
 package com.example.jetsetfood
 
-import android.content.Intent
+
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -40,15 +39,20 @@ class POC_DataReq: AppCompatActivity() {
 
         datenblatt.visibility=View.INVISIBLE
 
+
+        //Knopf soll auf Antippen die Eingabe überprüfen und ggf. das zur eingabe gehörige Datenblatt ausgeben
         button.setOnClickListener{
             if(produceInput.text.toString().isEmpty())
                 produceInput.error=("Bitte gib eine Obst oder Gemüsesorte ein")
+
+            //prüft ob das Obst oder Gemüse vorhanden ist
             else if(!produceListe.contains(produceInput.text.toString().toLowerCase())) {
                 produceInput.error = "Dieses Obst oder Gemüse wird leider noch nicht unterstützt!"
                 datenblatt.text="Unterstützes Obst und Gemüse: ${produceString} "
                 datenblatt.visibility= View.VISIBLE
 
             }
+            //liest zur eingabe gehöriges Datenblatt ein und wählt die Aktuellen Monat aus dem Saisonkalender aus
             else {
                 val jsonString = getJsonDataFromAsset(this,produceInput.text.toString().toLowerCase() +".json")
                 val data:Produce = gson.fromJson(jsonString,produceType)
