@@ -1,0 +1,20 @@
+{
+  "type": "fruit",
+  "id": "f1",
+  "name": "Mango",
+  "origin": [
+    {"month":"Jan", "land":["BRA", "ECU", "PER", "KEN"]},
+    {"month":"Feb", "land":["BRA", "ECU", "PER", "KEN"]},
+    {"month":"Mär", "land":["BRA", "CRI", "KEN", "MEX", "USA", "PRI"]},
+    {"month":"Apr", "land":["CRI", "CIV", "KEN", "MEX", "USA", "PRI"]},
+    {"month":"Mai", "land":["CRI", "CIV", "KEN", "MEX", "USA", "PRI"]},
+    {"month":"Jun", "land":["CRI", "CIV", "MEX", "PAK", "USA", "PRI"]},
+    {"month":"Jul", "land":["CRI", "CIV", "MEX", "PAK", "USA", "PRI"]},
+    {"month":"Aug", "land":["CRI", "ISR", "MEX", "PAK", "USA", "PRI"]},
+    {"month":"Sep", "land":["ISR", "MEX", "USA", "PRI"]},
+    {"month":"Okt", "land":["BRA", "ISR", "KEN", "MEX", "USA", "PRI"]},
+    {"month":"Nov", "land":["BRA", "ECU", "PER", "ISR", "KEN", "USA", "PRI"]},
+    {"month":"Dez", "land":["BRA", "ECU", "PER", "KEN", "USA", "PRI"]}
+  ]
+
+}
