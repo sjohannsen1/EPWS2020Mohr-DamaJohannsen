@@ -30,9 +30,7 @@ class Prototype : AppCompatActivity() {
                     textView.visibility= View.VISIBLE
                 }
                 else {
-
                     startActivity(Intent(this, PrototypeMap::class.java).putExtra("input", produceInput.text.toString()))
-
                 }
         }
 

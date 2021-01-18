@@ -12,24 +12,14 @@ import com.google.gson.reflect.TypeToken
 import java.util.*
 
 class POC_DataReq: AppCompatActivity() {
-    val gson= Gson()
-    val produceType=object: TypeToken<Produce>(){}.type
+
     val currentMonth = Calendar.getInstance().get(Calendar.MONTH)
     lateinit var produceInput:TextInputEditText
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        fun getCountryName(produce: Produce):String{
-            var res=""
-            produce.origin[currentMonth].land.forEach{land ->
-                countryListe.forEach{
-                    if(it.first==land)
-                        res+="${it.third}, "
-                }
-            }
-            return res
-        }
+
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_poc__data_req)
@@ -56,7 +46,7 @@ class POC_DataReq: AppCompatActivity() {
             else {
                 val jsonString = getJsonDataFromAsset(this,produceInput.text.toString().toLowerCase() +".json")
                 val data:Produce = gson.fromJson(jsonString,produceType)
-                datenblatt.text="Im ${currentMonth+1}. Monat im Jahr kann man ${data.name} aus ${getCountryName(data)} kaufen"
+                datenblatt.text="Im ${currentMonth+1}. Monat im Jahr kann man ${data.name} aus ${getCountryName(data,currentMonth)} kaufen"
                 datenblatt.visibility=View.VISIBLE
 
 

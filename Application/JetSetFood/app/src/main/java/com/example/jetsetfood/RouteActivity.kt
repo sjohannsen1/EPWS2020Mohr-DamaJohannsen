@@ -63,7 +63,7 @@ class RouteActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPolyl
             .showInfoWindow()
     }
 
-    //fügt Polylines zwischen Deutschland und den Herkunftsländern
+   /* //fügt Polylines zwischen Deutschland und den Herkunftsländern
     //geodesic bedeutet dass die Linie nicht einfach grade ist, sondern sich an der Krümmung der Erdkugel orientiert
     fun addRoutes(mMap: GoogleMap, herkunft:List<Input>){
         herkunft.forEach{country->
@@ -92,21 +92,22 @@ class RouteActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPolyl
 
     }
 
+
+
     //Markiert Deutschland als Heimatland, kann durch Geolocating geändert werden
     fun addOrigin(map: GoogleMap,name:String, position:LatLng, flaeche:Int ){
         map.addMarker(MarkerOptions().position(position).title(name))
     }
-
+*/
 
     //inits map & camera on germany
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         //Karte reduzieren auf das wichtigste
         mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this,R.raw.map_style))
-
-        addOrigin(mMap, "Deutschland", germany, R.raw.germany)
+        addOrigin(mMap, "Deutschland", germany, R.raw.germany, this)
         mMap.moveCamera(CameraUpdateFactory.zoomOut())
-        addRoutes(mMap, origin)
+        addRoutes(mMap, origin,this, centre)
         mMap.setOnPolylineClickListener(this)
 
     }
