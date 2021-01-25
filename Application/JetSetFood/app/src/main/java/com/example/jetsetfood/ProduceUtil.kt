@@ -6,6 +6,9 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.json.JSONObject
 import java.io.IOException
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
 
 val produceListe=listOf("avocado", "erdbeere", "feige", "himbeere", "kartoffel", "mango", "okra", "paprika", "tomate", "zucchini")
 
@@ -163,10 +166,6 @@ fun getCountriesAsObjects(countries: List<String>):List<GEOStructure>{
     return res
 }
 
-
-
-
-
 fun getJsonDataFromAsset(context:Context, dateiName:String):String{
     /*val res=
     runCatching { context.assets.open(dateiName).bufferedReader().use { it.readText() } }
@@ -186,5 +185,15 @@ fun getJsonDataFromAsset(context:Context, dateiName:String):String{
         return ""
     }
     return json
+}
+
+fun getFromAPI(url:URL, query:String):Int{
+    val connection = url.openConnection() as HttpURLConnection
+    connection.requestMethod = "POST"
+    val `in` = connection.inputStream
+    val reader = InputStreamReader(`in`)
+    var data = reader.read()
+
+    return data
 }
 

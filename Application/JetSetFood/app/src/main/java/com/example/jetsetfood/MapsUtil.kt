@@ -96,6 +96,7 @@ fun addLabel(map:GoogleMap, herkunft: List<Pair<LatLng,String>>, context: Contex
     }
 }
 
+
 //Markiert Deutschland als Heimatland, kann durch Geolocating geändert werden
 fun addOrigin(map: GoogleMap, name:String, position: LatLng, flaeche:Int , context: Context){
     map.addMarker(MarkerOptions()
