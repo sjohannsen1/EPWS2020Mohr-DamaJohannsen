@@ -1,0 +1,9 @@
+{
+  "id": "MP10",
+  "Land": "Ecuador",
+  "Kürzel": "ECU",
+  "Mittelpunkt": [
+                  {"Latitude": -1.831239},
+                  {"Longitude": 33.429859}
+                 ]
+}

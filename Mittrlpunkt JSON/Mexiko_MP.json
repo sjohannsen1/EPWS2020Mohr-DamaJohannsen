@@ -1,0 +1,9 @@
+{
+  "id": "MP18",
+  "Land": "Mexiko",
+  "Kürzel": "MEX",
+  "Mittelpunkt": [
+                  {"Latitude": 23.634501},
+                  {"Longitude": -102.552784}
+                 ]
+}

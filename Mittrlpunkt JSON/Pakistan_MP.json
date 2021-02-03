@@ -1,0 +1,9 @@
+{
+  "id": "MP22",
+  "Land": "Pakistan",
+  "Kürzel": "PAK",
+  "Mittelpunkt": [
+                  {"Latitude": 30.375321},
+                  {"Longitude": 69.345116}
+                 ]
+}

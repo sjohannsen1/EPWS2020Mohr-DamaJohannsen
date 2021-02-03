@@ -1,0 +1,9 @@
+{
+  "id": "MP14",
+  "Land": "Israel",
+  "Kürzel": "ISR",
+  "Mittelpunkt": [
+                  {"Latitude": 31.046051},
+                  {"Longitude": 34.851612}
+                 ]
+}

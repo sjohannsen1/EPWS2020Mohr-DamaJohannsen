@@ -1,0 +1,9 @@
+{
+  "id": "MP12",
+  "Land": "Griechenland",
+  "Kürzel": "GRC",
+  "Mittelpunkt": [
+                  {"Latitude": 39.074208},
+                  {"Longitude": 21.824312}
+                 ]
+}

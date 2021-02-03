@@ -1,0 +1,9 @@
+{
+  "id": "MP26",
+  "Land": "Spanien",
+  "Kürzel": "ESP",
+  "Mittelpunkt": [
+                  {"Latitude": 40.463667},
+                  {"Longitude": -3.74922}
+                 ]
+}

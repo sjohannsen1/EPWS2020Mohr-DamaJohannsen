@@ -1,0 +1,9 @@
+{
+  "id": "MP7",
+  "Land": "Thailand",
+  "Kürzel": "THA",
+  "Mittelpunkt": [
+                  {"Latitude": 15.870032},
+                  {"Longitude": 100.992541}
+                 ]
+}

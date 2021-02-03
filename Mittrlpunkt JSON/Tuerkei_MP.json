@@ -1,0 +1,9 @@
+{
+  "id": "MP28",
+  "Land": "Türkei",
+  "Kürzel": "TUR",
+  "Mittelpunkt": [
+                  {"Latitude": 38.963745},
+                  {"Longitude": 35.243322}
+                 ]
+}

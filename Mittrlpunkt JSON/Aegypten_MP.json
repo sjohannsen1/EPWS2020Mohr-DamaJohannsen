@@ -1,0 +1,9 @@
+{
+  "id": "MP11",
+  "Land": "Ägypten",
+  "Kürzel": "EGY",
+  "Mittelpunkt": [
+                  {"Latitude": 26.820553},
+                  {"Longitude": 30.802498}
+                 ]
+}

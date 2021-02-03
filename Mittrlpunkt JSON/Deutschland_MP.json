@@ -1,0 +1,9 @@
+{
+  "id": "MP1",
+  "Land": "Deutschland",
+  "Kürzel": "DEU",
+  "Mittelpunkt": [
+                  {"Latitude": 51.165691},
+                  {"Longitude": 10.451526}
+                 ]
+}

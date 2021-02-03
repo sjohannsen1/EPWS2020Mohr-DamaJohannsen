@@ -1,0 +1,9 @@
+{
+  "id": "MP9",
+  "Land": "Zypern",
+  "Kürzel": "CYP",
+  "Mittelpunkt": [
+                  {"Latitude": 35.126413},
+                  {"Longitude": 33.429859}
+                 ]
+}

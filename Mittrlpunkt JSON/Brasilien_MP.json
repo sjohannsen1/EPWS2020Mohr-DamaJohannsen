@@ -1,0 +1,9 @@
+{
+  "id": "MP4",
+  "Land": "Brasilien",
+  "Kürzel": "BRA",
+  "Mittelpunkt": [
+                  {"Latitude": -14.235004},
+                  {"Longitude": -51.92528}
+                 ]
+}

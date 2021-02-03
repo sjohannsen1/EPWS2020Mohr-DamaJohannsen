@@ -1,0 +1,9 @@
+{
+  "id": "MP6",
+  "Land": "Kenia",
+  "Kürzel": "KEN",
+  "Mittelpunkt": [
+                  {"Latitude": -0.023559},
+                  {"Longitude": 37.906193}
+                 ]
+}
