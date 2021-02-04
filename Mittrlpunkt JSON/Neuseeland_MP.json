@@ -1,7 +1,7 @@
 {
   "id": "MP21",
   "Land": "Neuseeland",
-  "Kürzel": "NZL",
+  "Kuerzel": "NZL",
   "Mittelpunkt": [
                   {"Latitude": -40.900557},
                   {"Longitude": 174.885971}

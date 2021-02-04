@@ -1,7 +1,7 @@
 {
   "id": "MP20",
   "Land": "Niederlande",
-  "Kürzel": "NLD",
+  "Kuerzel": "NLD",
   "Mittelpunkt": [
                   {"Latitude": 52.132633},
                   {"Longitude": 5.291266}

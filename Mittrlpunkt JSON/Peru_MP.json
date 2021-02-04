@@ -1,7 +1,7 @@
 {
   "id": "MP23",
   "Land": "Peru",
-  "Kürzel": "PER",
+  "Kuerzel": "PER",
   "Mittelpunkt": [
                   {"Latitude": -9.189967},
                   {"Longitude": -75.015152}

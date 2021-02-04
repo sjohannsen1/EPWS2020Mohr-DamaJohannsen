@@ -1,7 +1,7 @@
 {
   "id": "MP29",
   "Land": "USA",
-  "Kürzel": "USA",
+  "Kuerzel": "USA",
   "Mittelpunkt": [
                   {"Latitude": 37.09024},
                   {"Longitude": -95.712891}

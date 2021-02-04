@@ -1,7 +1,7 @@
 {
   "id": "MP5",
   "Land": "Chile",
-  "Kürzel": "CHL",
+  "Kuerzel": "CHL",
   "Mittelpunkt": [
                   {"Latitude": -35.675147},
                   {"Longitude": -71.542969}

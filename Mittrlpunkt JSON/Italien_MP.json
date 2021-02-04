@@ -1,7 +1,7 @@
 {
   "id": "MP15",
   "Land": "Italien",
-  "Kürzel": "ITA",
+  "Kuerzel": "ITA",
   "Mittelpunkt": [
                   {"Latitude": 41.87194},
                   {"Longitude": 12.56738}

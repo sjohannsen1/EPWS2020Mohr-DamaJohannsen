@@ -1,7 +1,7 @@
 {
   "id": "MP3",
   "Land": "Belgien",
-  "Kürzel": "BEL",
+  "Kuerzel": "BEL",
   "Mittelpunkt": [
                   {"Latitude": 50.503887},
                   {"Longitude": 4.469936}

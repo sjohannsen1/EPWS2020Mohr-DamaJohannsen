@@ -1,6 +1,6 @@
 {
   "type": "vegetables",
-  "id": "v1",
+  "id": "1",
   "name": "potato",
   "origin": [
               {"month":"Jan", "land":["ISR", "MAR", "TUN", "EGY", "CYP", "GRC"]},

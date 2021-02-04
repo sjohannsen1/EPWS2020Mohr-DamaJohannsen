@@ -1,7 +1,7 @@
 {
   "id": "MP2",
   "Land": "Australien",
-  "Kürzel": "AUS",
+  "Kuerzel": "AUS",
   "Mittelpunkt": [
                   {"Latitude": -25.274398},
                   {"Longitude": 133.775136}
