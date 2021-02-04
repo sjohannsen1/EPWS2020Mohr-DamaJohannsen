@@ -21,7 +21,8 @@ class PrototypeMap : AppCompatActivity(), OnMapReadyCallback {
     val gson= Gson()
     val produceType=object: TypeToken<Produce>(){}.type
     private lateinit var textView:TextView
-    val currentMonth = Calendar.getInstance().get(Calendar.MONTH)
+
+
 
     private val latGermany=51.5167
     private val lngGermany=9.9167
