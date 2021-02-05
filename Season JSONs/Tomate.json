@@ -1,0 +1,20 @@
+{
+  "type": "Gemuese",
+  "id": "v4",
+  "name": "Tomate",
+  "origin": [
+    {"month":"Jan", "land":["FRA", "ESP", "NLD", "IC"]},
+    {"month":"Feb", "land":["FRA", "ESP", "NLD", "IC"]},
+    {"month":"Mär", "land":["FRA", "ESP", "NLD", "IC"]},
+    {"month":"Apr", "land":["FRA", "ESP", "NLD", "IC"]},
+    {"month":"Mai", "land":["FRA", "ESP", "NLD"]},
+    {"month":"Jun", "land":["DEU", "GA", "FRA", "ESP", "NLD", "ITA"]},
+    {"month":"Jul", "land":["DEU", "GA", "FRA", "ESP", "NLD", "ITA"]},
+    {"month":"Aug", "land":["DEU", "GA", "FRA", "ESP", "NLD", "ITA"]},
+    {"month":"Sep", "land":["DEU", "GA", "FRA", "ESP", "NLD", "ITA"]},
+    {"month":"Okt", "land":["DEU", "gG", "FRA", "ESP", "NLD", "ITA"]},
+    {"month":"Nov", "land":["DEU", "gG","FRA", "ESP", "NLD", "IC"]},
+    {"month":"Dez", "land":["FRA", "ESP", "NLD", "IC"]}
+  ]
+
+}

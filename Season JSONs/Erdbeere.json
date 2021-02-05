@@ -1,0 +1,20 @@
+{
+  "type": "Obst",
+  "id": "f4",
+  "name": "Erdbeere",
+  "origin": [
+    {"month":"Jan", "land":["ISR", "ESP"]},
+    {"month":"Feb", "land":["ISR", "MAR", "ESP"]},
+    {"month":"Mär", "land":["ITA", "MAR", "ESP"]},
+    {"month":"Apr", "land":["BEL", "FRA", "ITA", "ESP"]},
+    {"month":"Mai", "land":["DEU", "uG","BEL", "FRA", "ITA", "ESP"]},
+    {"month":"Jun", "land":["DEU", "Fr", "BEL", "FRA", "ITA", "ESP"]},
+    {"month":"Jul", "land":["DEU", "Fr", "BEL", "NLD", "USA"]},
+    {"month":"Aug", "land":["DEU", "Fr","BEL", "NLD", "USA"]},
+    {"month":"Sep", "land":["DEU", "Fr","USA"]},
+    {"month":"Okt", "land":["DEU", "uG","USA"]},
+    {"month":"Nov", "land":["ISR", "USA"]},
+    {"month":"Dez", "land":["ISR"]}
+  ]
+
+}

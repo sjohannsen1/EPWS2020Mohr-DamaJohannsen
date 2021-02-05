@@ -1,7 +1,7 @@
 {
-  "type": "vegetables",
+  "type": "Gemuese",
   "id": "v3",
-  "name": "bell pepper",
+  "name": "Paprika",
   "origin": [
     {"month":"Jan", "land":["ESP", "NLD", "TUR"]},
     {"month":"Feb", "land":["ESP", "NLD"]},

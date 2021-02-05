@@ -1,0 +1,20 @@
+{
+  "type": "Gemuese",
+  "id": "v8",
+  "name": "Lauch",
+  "origin": [
+    {"month":"Jan", "land":["DEU", "La", "Fr"]},
+    {"month":"Feb", "land":["DEU", "La", "Fr"]},
+    {"month":"Mär", "land":["DEU", "La", "Fr"]},
+    {"month":"Apr", "land":["DEU", "Fr"]},
+    {"month":"Mai", "land":["DEU", "Fr"]},
+    {"month":"Jun", "land":["DEU", "Fr"]},
+    {"month":"Jul", "land":["DEU", "Fr"]},
+    {"month":"Aug", "land":["DEU", "Fr"]},
+    {"month":"Sep", "land":["DEU", "Fr"]},
+    {"month":"Okt", "land":["DEU", "Fr"]},
+    {"month":"Nov", "land":["DEU", "Fr"]},
+    {"month":"Dez", "land":["DEU", "Fr"]}
+  ]
+
+}

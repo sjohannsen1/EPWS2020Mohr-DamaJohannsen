@@ -1,7 +1,7 @@
 {
-  "type": "fruit",
+  "type": "Obst",
   "id": "f3",
-  "name": "Fig",
+  "name": "Feige",
   "origin": [
     {"month":"Jan", "land":["BRA"]},
     {"month":"Feb", "land":["BRA"]},

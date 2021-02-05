@@ -1,0 +1,20 @@
+{
+  "type": "Gemuese",
+  "id": "1",
+  "name": "Kartoffel",
+  "origin": [
+              {"month":"Jan", "land":["DEU", "La", "ISR", "MAR", "TUN", "EGY", "CYP", "GRC"]},
+              {"month":"Feb", "land":["DEU", "La", "ISR", "MAR", "TUN", "EGY", "CYP", "GRC"]},
+              {"month":"Mär", "land":["DEU", "La", "ISR", "MAR", "TUN", "EGY", "CYP", "GRC"]},
+              {"month":"Apr", "land":["DEU", "La", "ESP", "ITA", "ISR", "MAR", "TUN", "EGY", "CYP", "GRC"]},
+              {"month":"Mai", "land":["DEU", "La", "ESP", "ITA", "ISR", "MAR", "TUN", "EGY", "CYP", "GRC"]},
+              {"month":"Jun", "land":["DEU", "Fr", "La", "ESP", "ITA", "ISR", "MAR", "TUN", "EGY", "CYP", "GRC"]},
+              {"month":"Jul", "land":["DEU", "Fr", "La", "ESP", "ITA"]},
+              {"month":"Aug", "land":["DEU", "Fr", "La", "ESP", "ITA"]},
+              {"month":"Sep", "land":["DEU", "Fr", "La"]},
+              {"month":"Okt", "land":["DEU", "Fr", "La"]},
+              {"month":"Nov", "land":["DEU", "Fr", "La"]},
+              {"month":"Dez", "land":["DEU", "La"]}
+              ]
+
+  }

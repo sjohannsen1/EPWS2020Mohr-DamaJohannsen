@@ -1,0 +1,20 @@
+{
+  "type": "Gemuese",
+  "id": "v6",
+  "name": "Gruenkohl",
+  "origin": [
+    {"month":"Jan", "land":["DEU", "Fr"]},
+    {"month":"Feb", "land":["DEU", "Fr"]},
+    {"month":"Mär", "land":["DEU", "Fr"]},
+    {"month":"Apr", "land":[]},
+    {"month":"Mai", "land":[]},
+    {"month":"Jun", "land":[]},
+    {"month":"Jul", "land":[]},
+    {"month":"Aug", "land":[]},
+    {"month":"Sep", "land":["DEU", "Fr"]},
+    {"month":"Okt", "land":["DEU", "Fr"]},
+    {"month":"Nov", "land":["DEU", "Fr"]},
+    {"month":"Dez", "land":["DEU", "Fr"]}
+  ]
+
+}

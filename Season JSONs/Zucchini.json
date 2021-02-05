@@ -1,18 +1,18 @@
 {
-  "type": "vegetables",
+  "type": "Gemuese",
   "id": "v5",
-  "name": "zucchini",
+  "name": "Zucchini",
   "origin": [
     {"month":"Jan", "land":["ESP"]},
     {"month":"Feb", "land":["ITA", "ESP"]},
     {"month":"Mär", "land":["ITA", "ESP"]},
     {"month":"Apr", "land":["ITA", "ESP", "TUR"]},
     {"month":"Mai", "land":["FRA", "ITA", "NLD", "ESP", "TUR"]},
-    {"month":"Jun", "land":["DEU", "FRA", "ITA", "NLD", "TUR"]},
-    {"month":"Jul", "land":["DEU", "FRA", "NLD"]},
-    {"month":"Aug", "land":["DEU", "FRA", "NLD"]},
-    {"month":"Sep", "land":["DEU", "FRA", "ITA", "NLD"]},
-    {"month":"Okt", "land":["DEU", "FRA", "ITA"]},
+    {"month":"Jun", "land":["DEU", "GA", "FRA", "ITA", "NLD", "TUR"]},
+    {"month":"Jul", "land":["DEU", "FR", "FRA", "NLD"]},
+    {"month":"Aug", "land":["DEU", "FR", "FRA", "NLD"]},
+    {"month":"Sep", "land":["DEU", "FR", "FRA", "ITA", "NLD"]},
+    {"month":"Okt", "land":["DEU", "FR", "FRA", "ITA"]},
     {"month":"Nov", "land":["ITA", "ESP", "TUR"]},
     {"month":"Dez", "land":["ITA", "ESP"]}
   ]

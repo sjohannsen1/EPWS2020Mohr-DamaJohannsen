@@ -1,0 +1,20 @@
+{
+  "type": "Gemuese",
+  "id": "v7",
+  "name": "Salatgurke",
+  "origin": [
+    {"month":"Jan", "land":[]},
+    {"month":"Feb", "land":["DEU", "gG"]},
+    {"month":"Mär", "land":["DEU", "gG"]},
+    {"month":"Apr", "land":["DEU", "gG", "uG"]},
+    {"month":"Mai", "land":["DEU", "gG", "uG"]},
+    {"month":"Jun", "land":["DEU", "gG", "uG" ]},
+    {"month":"Jul", "land":["DEU", "gG", "uG"]},
+    {"month":"Aug", "land":["DEU", "gG", "uG"]},
+    {"month":"Sep", "land":["DEU", "gG", "uG"]},
+    {"month":"Okt", "land":["DEU", "gG", "uG"]},
+    {"month":"Nov", "land":[]},
+    {"month":"Dez", "land":[]}
+  ]
+
+}

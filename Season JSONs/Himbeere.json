@@ -1,17 +1,17 @@
 {
-  "type": "fruit",
+  "type": "Obst",
   "id": "f2",
-  "name": "Raspberry",
+  "name": "Himbeere",
   "origin": [
     {"month":"Jan", "land":["CHL", "NZL", "GTM", "USA", "MEX"]},
     {"month":"Feb", "land":["CHL", "NZL", "GTM", "USA", "MEX"]},
     {"month":"Mär", "land":["USA", "MEX"]},
     {"month":"Apr", "land":[]},
     {"month":"Mai", "land":[]},
-    {"month":"Jun", "land":["DEU"]},
-    {"month":"Jul", "land":["DEU"]},
-    {"month":"Aug", "land":["DEU"]},
-    {"month":"Sep", "land":["DEU"]},
+    {"month":"Jun", "land":["DEU", "uG"]},
+    {"month":"Jul", "land":["DEU", "Fr"]},
+    {"month":"Aug", "land":["DEU", "Fr"]},
+    {"month":"Sep", "land":["DEU", "uG"]},
     {"month":"Okt", "land":[]},
     {"month":"Nov", "land":["USA", "MEX"]},
     {"month":"Dez", "land":["CHL", "NZL", "GTM", "USA", "MEX"]}
