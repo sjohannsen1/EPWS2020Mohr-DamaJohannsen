@@ -2,16 +2,56 @@ package com.example.jetsetfood
 
 import android.content.Context
 import android.util.Log
+import android.widget.TextView
+import com.google.android.gms.maps.GoogleMap
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import org.json.JSONObject
 import java.io.IOException
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
+import java.lang.reflect.Type
 import java.util.*
+
+val gson= Gson()
+val currentMonth
+    get() = Calendar.getInstance().get(Calendar.MONTH)
+val monthNames=listOf("Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember")
+val farmingMethod=listOf("LA", "GG", "UG", "GA", "FR")
+
+
+//Types der Klassen um die JSONStrings zu kovertieren
+val produceType=object: TypeToken<Produce>(){}.type
+val countryType=object: TypeToken<Country>(){}.type
+
+
+//Dataclasses für Datenbankobjekte
+data class Origin(val month:String, val land:List<String>)
+//Beim Fall Deutschland: Eintrag in land, bei verschiedenen Anbauarten das schlechtere
+data class Produce(val type:String,val id:String , val name:String, val origin: List<Origin>)
+
+data class Country(val id: String, val land: String, val kuerzel: String, val mittelpunkt: List<Coords>)
+
+data class Coords(val latitude: Double, val longitude: Double)
+
+val inSeason: (Produce?, Int)->List<String> = {produce, month -> produce?.origin?.get(month)?.land ?: listOf()} //Falls Produce null ist, wird eine leere liste zurückgegeben
+
+
+val addToMap:(DBResponse?, GoogleMap, Context, TextView?)-> Unit ={
+        res, mMap, context, textView ->
+    if(res!=null) {
+        if(res.regional!=null)
+            addFarmingMethod(mMap,context,res.regional)
+        else
+            addOrigin(mMap, "Deutschland", germany, R.raw.germany, context)
+        //länder markieren, routenberechen
+        addOutlineFromJSON(mMap, res.geojsons, context)
+        addLabel(mMap,res.countries,context)
+        addRoutes(mMap,res.countries,context,germany, germany)
+        textView?.text="Im ${monthNames[currentMonth]} kann man ${res.produce.name} aus ${res.countries.map{it.land}} kaufen"
+    }
+}
+
+
+
 //Alt
 val produceListe=listOf("avocado", "erdbeere", "feige", "himbeere", "kartoffel", "mango", "okra", "paprika", "tomate", "zucchini")
 
@@ -50,23 +90,6 @@ val countryListe=listOf(
     Triple("USA", R.raw.usa, "USA")
 )
 //
-
-
-val gson= Gson()
-val produceType=object: TypeToken<Produce>(){}.type
-val mittelpunktType=object: TypeToken<Mittelpunkt>(){}.type
-
-val currentMonth
-    get() = Calendar.getInstance().get(Calendar.MONTH)
-
-//Dataclasses für Datenbankobjekte
-data class Origin(val month:String, val land:List<String>)
-//Beim Fall Deutschland: Eintrag in land, bei verschiedenen Anbauarten das schlechtere
-data class Produce(val type:String,val id:String , val name:String, val origin: List<Origin>)
-
-data class Mittelpunkt(val id: String, val land: String, val kuerzel: String, val mittelpunkt: List<Coords>)
-
-data class Coords(val latitude: Double, val longitude: Double)
 
 /*
 Struktur für GEOJSONs, obsolet
@@ -154,7 +177,7 @@ data class Properties(
     val woe_id: Int
 )
 */
-
+//Alt
 fun getCountryName(produce: Produce, currentMonth:Int):String{
     var res=""
     produce.origin[currentMonth].land.forEach{land ->
@@ -166,7 +189,7 @@ fun getCountryName(produce: Produce, currentMonth:Int):String{
     return res
 }
 
-
+//Alr
 fun getCountryJSONs(countries:List<String>):List<JSONObject>{
     var res= listOf<JSONObject>()
     countries.forEach{
@@ -175,7 +198,7 @@ fun getCountryJSONs(countries:List<String>):List<JSONObject>{
     return res
 }
 
-
+//Alt
 fun getJsonDataFromAsset(context:Context, dateiName:String):String{
     /*val res=
     runCatching { context.assets.open(dateiName).bufferedReader().use { it.readText() } }
@@ -197,47 +220,7 @@ fun getJsonDataFromAsset(context:Context, dateiName:String):String{
     return json
 }
 
-//Datenbsnkcalls
-
-suspend fun getData(view:android.view.View, query: String, onResponse: (String?)->Unit ){
-    try{
-        val result = GlobalScope.async{
-            callDatabase(/*TODO: Add URL*/"test", query)
-        }.await()
-
-        onResponse(result)
-
-    }catch (e:Exception){
-        Log.e("API", "Query failed", e)
-    }
-
-}
-
- private fun callDatabase(apiUrl:String, query:String):String?{
-     var result:String?=""
-     val url=URL(apiUrl+query)
-     try {
-         val connection = url.openConnection() as HttpURLConnection
-
-         //TODO: HEADER, HOST NAME, API KEY mit connection.setRequestProperty() setten falls benötigt
-
-         connection.requestMethod = "GET"
-         val `in` = connection.inputStream
-         val reader = InputStreamReader(`in`)
-         var data = reader.read()
-         while (data!=-1){
-             val current=data.toChar()
-             result+=current
-             data=reader.read()
-         }
-         return result
-     } catch(e:Exception){
-         Log.e("API", "API Abfrage fehlgeschlagen", e)
-     }
-     //falls Datenabfrage fehlgeschlagen ist, return null
-     return null
-}
-
+/* wurde durch processResponse ersetzt
 private fun getCountryAsObject(result:String?):Mittelpunkt?{
     try{
         //String zu JSON convertieren
@@ -260,17 +243,4 @@ private fun getSeasonAsObject(result:String?):Produce?{
     }
     return null
 }
-
-val inSeason: (Produce?, Int)->List<String> = {produce, month -> produce?.origin?.get(month)?.land ?: listOf()} //Falls Produce null ist, wird eine leere liste zurückgegeben
-
-val getMP: (result:String?)->Unit={ result ->
-    inSeason(getSeasonAsObject(result), currentMonth)
-        .forEach{
-
-            //TODO:Get Mittelpunkte
-
-    }
-}
-
-
-
+*/

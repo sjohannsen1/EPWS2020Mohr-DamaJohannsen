@@ -6,4 +6,9 @@
     <string name="title_activity_POC__Data_Req">POC: Eingabe und Saisonkalender</string>
     <string name="produce_input">Obst oder Gemüsesorte</string>
     <string name="produce_enter">Herkunft herausfinden</string>
+    <string name="FR">Freilandanbau</string>
+    <string name="GA">Geschützer Anbau (Abdeckung mit Folie oder Vlies, ungeheizt)</string>
+    <string name="GG">Anbau in beheiztem Gewächshaus</string>
+    <string name="UG">Anbau in un- oder schwach geheiztem Gewächshaus</string>
+    <string name="LA">Lagerware</string>
 </resources>
