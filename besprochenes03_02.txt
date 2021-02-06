@@ -1,0 +1,15 @@
+Saisonkalender:
+	GET  Producename
+Mittelpunkt: 
+	GET mittelpunkt/Drei Länderkürzel
+GeoJSON: 
+	GET geojson/Drei Länderkürzel
+
+	
+LA ger
+GG geheiztes gewächshaus
+UG ungeheiztes gewächshaus
+GA gerschützeranbau
+FR eiland
+
+-> string ressourcen

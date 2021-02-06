@@ -50,7 +50,7 @@ val addToMap:(DBResponse?, GoogleMap, Context, TextView?)-> Unit ={
     }
 }
 
-
+//TODO: Überlegen wie nötig das sowie DBResponse ist
 
 //Alt
 val produceListe=listOf("avocado", "erdbeere", "feige", "himbeere", "kartoffel", "mango", "okra", "paprika", "tomate", "zucchini")

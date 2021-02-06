@@ -31,14 +31,14 @@ suspend fun getDataforProduce(produce:String,map:GoogleMap, context: Context,tex
          if(origins.contains("GER")){
              regional=origins.fold(listOf()){acc, cur -> if(farmingMethod.contains(cur)) acc+cur else acc}
          }
-        val countryStrings=makeQuery(origins, "Mittelpunkt").map{
+        val countryStrings=makeQuery(origins, "mittelpunkt").map{
             GlobalScope.async { callDatabase(url,it)}.await()
         }
         val curCountries= countryStrings.map{
             processResponse(it, countryType) as Country
         }
         //Mittelpunktliste wird benötigt um Marker dort zu setzen
-        val geoJSONs= makeQuery(origins,"GeoJSON").map{
+        val geoJSONs= makeQuery(origins,"geojson").map{
             GlobalScope.async{ callDatabase(url, it)}.await()
             }.map{JSONObject(it)}
         //Wird benötigt zur Markierung der Länder

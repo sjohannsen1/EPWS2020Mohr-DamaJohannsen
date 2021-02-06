@@ -41,6 +41,7 @@ class PrototypeMap : AppCompatActivity(), OnMapReadyCallback {
         mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this,R.raw.map_style))
         mMap.moveCamera(CameraUpdateFactory.zoomOut())
         GlobalScope.async { getDataforProduce(intent.extras?.getString("input")!!, mMap, this@PrototypeMap, textView, addToMap)}
+        //TODO: Herausfinden wie das Schöner geht (add to map nicht in der funktion aufrufen)
 
     }
 }
