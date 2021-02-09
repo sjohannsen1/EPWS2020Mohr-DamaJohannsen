@@ -1,4 +1,4 @@
-const knex = require("./knex");
+const knex = require("./knex.js");
 
 function getMittelpunkt(laendercode) {
     return knex("mittelpunkt").where("laendercode", laendercode).select();

@@ -1,9 +1,14 @@
 const express = require('express');
 const app = express();
 const sqlite3 = require('sqlite3').verbose();
+const db=require('./datenbank.js')
 
 
-let db = new sqlite3.Database('Datenbank');
+//let db = new sqlite3.Database('Datenbank');
+
+app.get("/",(req, res) => {
+  res.send("Produce Database")
+})
 
 app.get("/produce/:name", async (req, res) => {
   const produce = await db.getProduce (req.params.name);
@@ -63,11 +68,11 @@ app.get('/:geojson/Laendercode', (req, res) => {
 })*/
 
 // close the database connection
-db.close((err) => {
+/*db.close((err) => {
     if (err) {
       return console.error(err.message);
     }
     console.log('Close the database connection.');
-  });
+  });*/
 
-  app.listen(1337, () => console.log("Server is running on port 1337"));
+  app.listen(8080, () => console.log("Server is running on port 8080"));
