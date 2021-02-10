@@ -2,76 +2,32 @@ const express = require('express');
 const app = express();
 const db=require('./datenbank.js')
 
-
-//let db = new sqlite3.Database('Datenbank');
-
-app.get("/",(req, res) => {
+app.get("/",(_, res) => {
   res.send("Produce Database")
 })
 
 app.get("/produce/:name", async (req, res) => {
-  const produce = await db.getProduce (req.params.name);
-  res.status(200).json({ produce });
+  const produce = (await db.getProduce (req.params.name))[0]
+  res.status(200).json({ 
+    "typ": produce.typ,
+    "name": produce.name,
+    "season": JSON.parse("{"+ produce.season+"}").origin
+   })
 
-});
+})
 
 app.get("/mittelpunkt/:laendercode", async (req, res) => {
-  const mittelpunkt = await db.getMittelpunkt (req.params.laendercode);
-  res.status(200).json({ mittelpunkt });
-});
+  const mittelpunkt = await db.getMittelpunkt (req.params.laendercode)
+  res.status(200).json({ mittelpunkt })
+})
 
 app.get("/geo_daten/:laendercode", async (req, res)=>{
-  const geo_daten = await db.getGeojson (req.params.laendercode);
-  res.status(200).json({ geo_daten }); 
-});    
+  let data= (await db.getGeojson (req.params.laendercode))[0]
+  res.status(200).json( {
+    "laendercode": data.laendercode,
+    "geo_json": JSON.parse(data.geo_json)
+  } )
   
-  /*let sql= `SELECT ALL Name ` +parseString(req.params.produce)+`FROM produce`
-    
-    db.all(sql, [], (err, rows) => {
-        if (err) {
-          throw err;
-        }
-        rows.forEach((row) => {
-          //console.log(row.name);
-        });
-      });
-
 })
 
-app.get('/mittelpunkt/:laendercode', (req, res) => {
-    let sql= `SELECT ALL Name ` +(req.params.produce)+`FROM mittelpunkt`
-    
-    db.all(sql, [], (err, rows) => {
-        if (err) {
-          throw err;
-        }
-        rows.forEach((row) => {
-          //console.log(row.name);
-        });
-     }) ;
-
-})
-
-app.get('/:geojson/Laendercode', (req, res) => {
-    let sql= `SELECT ALL Name ` +parseString(req.params.produce)+`FROM geo_daten`
-    
-    db.all(sql, [], (err, rows) => {
-        if (err) {
-          throw err;
-        }
-        rows.forEach((row) => {
-          //console.log(row.name);
-        });
-      });
-
-})*/
-
-// close the database connection
-/*db.close((err) => {
-    if (err) {
-      return console.error(err.message);
-    }
-    console.log('Close the database connection.');
-  });*/
-
-  app.listen(8080, () => console.log("Server is running on port 8080"));
+app.listen(8080, () => console.log("Server is running on port 8080"));
