@@ -1,0 +1,28 @@
+{
+  "name": "datenbank",
+  "version": "1.0.0",
+  "engines": {
+    "node": "8.12"
+  },
+  "description": "Db",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "\u0016https://github.com/SophiaJ1/EPWS2020Mohr-DamaJohannsen.git"
+  },
+  "keywords": [
+    "JetSet",
+    "Food"
+  ],
+  "author": "SophiaJ MarkusMD",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "knex": "^0.21.17",
+    "sqlite3": "^5.0.0"
+  }
+}
