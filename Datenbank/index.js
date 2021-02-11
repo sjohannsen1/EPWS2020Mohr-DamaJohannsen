@@ -23,10 +23,9 @@ app.get("/mittelpunkt/:laendercode", async (req, res) => {
 
 app.get("/geo_daten/:laendercode", async (req, res)=>{
   let data= (await db.getGeojson (req.params.laendercode))[0]
-  res.status(200).json( {
-    "laendercode": data.laendercode,
-    "geo_json": JSON.parse(data.geo_json)
-  } )
+  res.status(200).json( 
+    JSON.parse(data.geo_json)
+  )
   
 })
 
