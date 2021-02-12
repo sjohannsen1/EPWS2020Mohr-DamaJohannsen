@@ -29,6 +29,11 @@ app.get("/geo_daten/:laendercode", async (req, res)=>{
   
 })
 
+app.get("/produce", async (req, res) => {
+  const produce = await db.getAllProduce();
+  res.status(200).json({produce});
+})
+
 const port = process.env.PORT || 8080
 app.listen(port, () => console.log(`Listening on port ${port}..`))
 //app.listen(8080, () => console.log("Server is running on port 8080"));

@@ -13,8 +13,13 @@ function getProduce(name) {
     return knex("produce").where("name", name).select();
 }
 
+function getAllProduce(){
+    return knex("produce").select("*");
+}
+
 module.exports = {
     getMittelpunkt,
     getGeojson,
-    getProduce
+    getProduce,
+    getAllProduce
 };
