@@ -8,34 +8,32 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.json.JSONObject
 import java.io.IOException
-import java.lang.reflect.Type
 import java.util.*
 
 val gson= Gson()
 val currentMonth
     get() = Calendar.getInstance().get(Calendar.MONTH)
 val monthNames=listOf("Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember")
-val farmingMethod=listOf("LA", "GG", "UG", "GA", "FR")
+val farmingMethod=listOf("la", "gg", "ug", "ga", "fr")
 
 
 //Types der Klassen um die JSONStrings zu kovertieren
 val produceType=object: TypeToken<Produce>(){}.type
-val countryType=object: TypeToken<Country>(){}.type
+val countryType=object: TypeToken<Mittelpunkt>(){}.type
+
 
 
 //Dataclasses für Datenbankobjekte
 data class Origin(val month:String, val land:List<String>)
 //Beim Fall Deutschland: Eintrag in land, bei verschiedenen Anbauarten das schlechtere
-data class Produce(val type:String,val id:String , val name:String, val origin: List<Origin>)
+data class Produce(val type:String, val name:String, val season: List<Origin>)
+data class Mittelpunkt(val mittelpunkt: List<Country>)
+data class Country(val laendercode: String, val latitude: Double, val longitude: Double)
 
-data class Country(val id: String, val land: String, val kuerzel: String, val mittelpunkt: List<Coords>)
-
-data class Coords(val latitude: Double, val longitude: Double)
-
-val inSeason: (Produce?, Int)->List<String> = {produce, month -> produce?.origin?.get(month)?.land ?: listOf()} //Falls Produce null ist, wird eine leere liste zurückgegeben
+val inSeason: (Produce?, Int)->List<String> = {produce, month -> produce?.season?.get(month)?.land ?: listOf()} //Falls Produce null ist, wird eine leere liste zurückgegeben
 
 
-val addToMap:(DBResponse?, GoogleMap, Context, TextView?)-> Unit ={
+/*val  addToMap:(DBResponse?, GoogleMap, Context, TextView?)-> Unit ={
         res, mMap, context, textView ->
     if(res!=null) {
         if(res.regional!=null)
@@ -46,14 +44,15 @@ val addToMap:(DBResponse?, GoogleMap, Context, TextView?)-> Unit ={
         addOutlineFromJSON(mMap, res.geojsons, context)
         addLabel(mMap,res.countries,context)
         addRoutes(mMap,res.countries,context,germany, germany)
-        textView?.text="Im ${monthNames[currentMonth]} kann man ${res.produce.name} aus ${res.countries.map{it.land}} kaufen"
+        textView?.text="Im ${monthNames[currentMonth]} kann man ${res.produce.name} aus ${res.countries.map{it.laendercode}} kaufen"
     }
-}
+}*/
+
 
 //TODO: Überlegen wie nötig das sowie DBResponse ist
 
 //Alt
-val produceListe=listOf("avocado", "erdbeere", "feige", "himbeere", "kartoffel", "mango", "okra", "paprika", "tomate", "zucchini")
+val produceListe=listOf("avocado", "erdbeere", "feige", "himbeere", "kartoffel", "mango", "okra", "paprika", "tomate", "zucchini", "lauch", "salatgurke", "grünkohl")
 
 val produceString= produceListe.fold(""){acc, it -> "$acc\n${it.capitalize()} "}
 
@@ -180,7 +179,7 @@ data class Properties(
 //Alt
 fun getCountryName(produce: Produce, currentMonth:Int):String{
     var res=""
-    produce.origin[currentMonth].land.forEach{land ->
+    produce.season[currentMonth].land.forEach{ land ->
         countryListe.forEach{
             if(it.first==land)
                 res+="${it.third}, "

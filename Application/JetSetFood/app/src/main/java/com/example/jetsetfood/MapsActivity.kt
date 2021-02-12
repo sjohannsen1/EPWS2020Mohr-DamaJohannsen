@@ -33,6 +33,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+        startActivity(Intent(this, Prototype::class.java))
+
+
+
 
     }
 /*
@@ -103,7 +107,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val jsonStrings = cNames.map { getJsonDataFromAsset(this,it+".json")}
         //Länder markieren
         //addOutline(mMap,countries,this, onCountryClick)
-        addOutlineFromJSON(mMap, getCountryJSONs(jsonStrings), this, onCountryClick)
+        addOutlineFromJSON(mMap, getCountryJSONs(jsonStrings), this)
         /*addLabel(mMap,getCountriesAsObjects(jsonStrings).map {
             Pair(LatLng(0.0,0.0), it.features[0].properties.name)
         }, this)*/
