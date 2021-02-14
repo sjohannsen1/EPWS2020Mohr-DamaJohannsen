@@ -2,6 +2,7 @@ package com.example.jetsetfood
 
 
 
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -9,9 +10,14 @@ import android.widget.TextView
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
+import com.google.maps.android.SphericalUtil
+import com.google.maps.android.data.geojson.GeoJsonLayer
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
+import kotlin.math.roundToInt
 
 
 class PrototypeMap : AppCompatActivity(), OnMapReadyCallback {
@@ -39,44 +45,59 @@ class PrototypeMap : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        mMap.let {
+            it.setOnMarkerClickListener { marker ->
+                Log.d("Marker", "click ${marker?.tag}")
+                runBlocking {
+                    val geoJSON = async {
+                        getGeoJson(listOf(marker.tag as String))
+                    }
+                    addOutlineFromJSON(mMap, geoJSON.await(), this@PrototypeMap)
+
+                }
+                Log.d("Marker", "click ${marker?.tag}")
+                false
+                //TODO: WIESO KLAPPT DAS NICHT
+            }
+        }
         //Karte reduzieren
-        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this,R.raw.map_style))
+        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
         mMap.moveCamera(CameraUpdateFactory.zoomOut())
 
-        //addOrigin(mMap, "Deutschland", germany, R.raw.germany, this)
-
         runBlocking {
-            val res = fetchDeferred(intent.extras?.getString("input")!!).await()
+
+            val produce= async{getProduce(intent.extras?.getString("input")!!)}.await()
             when {
-                res.isSuccess -> {
-                    val origin = inSeason(res.getOrNull(), currentMonth)
+                produce != null -> {
+                    val origin = inSeason(/*res.getOrNull()*/produce, currentMonth)
                     val countries = async {
                         getOrigin(origin)
                     }
-                    val geoJSONs = async {
+                    /*val geoJSONs = async {
                          getGeoJson(origin)
 
-                    }
-                    addLabel(mMap, countries.await()?.first, this@PrototypeMap)
-                    if(!countries.await()?.second.isNullOrEmpty())  addFarmingMethod(mMap, this@PrototypeMap, countries.await()?.second!!)
-                    addOutlineFromJSON(mMap, geoJSONs.await(),this@PrototypeMap)
-                    textView.text="Im ${monthNames[currentMonth]} kann man ${res.getOrNull()?.name} aus ${countries.await()?.first?.map{it.laendercode}} kaufen"
-                //TODO: DEutschland als herkunft fixen
-                }
-                else -> Log.e("api", "nebenläufigkeit kaputt ", res.exceptionOrNull())
-            }
-        }
-        mMap.setOnMarkerClickListener(MarkerClick(mMap, this, germany))
-        }/*
-        runBlocking {
-            val res = fetchDeferred1(intent.extras?.getString("input")!!).await()
-            when {
-                res.isSuccess -> addToMap(res.getOrNull(),mMap, this@PrototypeMap, textView)
-                res.isFailure -> Log.e("api", "nebenläufigkeit kaputt ",res.exceptionOrNull())
-                else -> Log.e("wtf", "wieso bin ich hier")
-            }
-        }*/
-        //TODO: Herausfinden wie das Schöner geht (add to map nicht in der funktion aufrufen)
+                    }*/
+                    var displayCountries =
+                        countries.await()?.first?.map { it.laendercode }//TODO: Wenn voll ländernamen geadded wurden ändern
+                    //addLabel(mMap, countries.await()?.first, this@PrototypeMap)
+                    if (!countries.await()?.second.isNullOrEmpty()) {
+                        addFarmingMethod(mMap, this@PrototypeMap, countries.await()?.second!!)
+                        displayCountries = displayCountries?.plus(listOf("DEU"))
+                    } else addOrigin(mMap, "Deutschland", germany, R.raw.germany, this@PrototypeMap)
+                    //addOutlineFromJSON(mMap, geoJSONs.await(),this@PrototypeMap)
+                    addRoutes(mMap, countries.await()?.first, this@PrototypeMap, germany)
 
+                    textView.text =
+                        "Im ${monthNames[currentMonth]} kann man ${produce.name} aus ${makeString(
+                            displayCountries,
+                            ", ",
+                            " oder "
+                        )} kaufen"
+                }
+                else -> Log.e("api", "nebenläufigkeit kaputt ")
+            }
+
+        }
+    }
 
 }

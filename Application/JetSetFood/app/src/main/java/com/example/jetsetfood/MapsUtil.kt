@@ -1,6 +1,7 @@
 package com.example.jetsetfood
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.util.Log
 import android.widget.Toast
@@ -9,6 +10,8 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.SphericalUtil
 import com.google.maps.android.data.geojson.GeoJsonLayer
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import kotlin.math.roundToInt
 
@@ -32,7 +35,7 @@ class MarkerClick(val mMap: GoogleMap, val context: Context, val origin: LatLng)
                         )) / 10).roundToInt().toDouble() / 100} km"
                     )
             )
-
+            Log.d("Marker", "click ${marker?.tag}")
         }.onSuccess { return true }
         return true
     }
@@ -107,16 +110,7 @@ fun addFarmingMethod(map: GoogleMap, context: Context, farmingMethods:List<Strin
     layerGermany.addLayerToMap()
 
 }
-fun addLabel(map: GoogleMap, herkunft: List<Country>?, context: Context) {
-    herkunft?.forEach {
-            map.addMarker(
-                MarkerOptions()
-                    .position(LatLng(it.latitude, it.longitude))
-                    .title(it.laendercode)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-            )
-    } ?: Log.e("Label", "Herkunft ist leer")
-}
+
 //Markiert Deutschland als Heimatland, kann durch Geolocating geändert werden
 fun addOrigin(map: GoogleMap, name:String, position: LatLng, flaeche:Int , context: Context){
     map.addMarker(MarkerOptions()
@@ -131,11 +125,18 @@ fun addOrigin(map: GoogleMap, name:String, position: LatLng, flaeche:Int , conte
 //fügt Polylines zwischen Deutschland und den Herkunftsländern
 //geodesic bedeutet dass die Linie nicht einfach grade ist, sondern sich an der Krümmung der Erdkugel orientiert
 //fügt routen hinzu und fügt auch nen clickable marker hinzu der es ermöglicht, das die distanz angezeigt wird
-fun addRoutes(mMap: GoogleMap, herkunft:List<Country>, context: Context, initPos:LatLng, origin:LatLng){
-    var centre=initPos
-    herkunft.forEach{country->
+fun addRoutes(mMap: GoogleMap, herkunft:List<Country>?, context: Context, origin:LatLng){
+    herkunft?.forEach{country->
         val coords=LatLng(country.latitude, country.longitude)
-        runCatching {  mMap.addMarker(MarkerOptions().position(coords).title(country.laendercode))
+        runCatching {  mMap.addMarker(
+            MarkerOptions()
+                .position(coords)
+                .title(country.laendercode)
+                .snippet("Distanz: ${((SphericalUtil.computeDistanceBetween(origin, coords) / 10).roundToInt().toDouble() / 100)} km")
+                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.positionpin))
+                .flat(true)
+
+        ).tag=country.laendercode
         }.onFailure {
             Toast.makeText(context, "Markierung konnte nicht hinzugefügt werden", Toast.LENGTH_LONG).show()
             Log.e("Marker", "konnte nicht hinzugefügt werden", it)
@@ -144,19 +145,34 @@ fun addRoutes(mMap: GoogleMap, herkunft:List<Country>, context: Context, initPos
             mMap.addPolyline(
                 PolylineOptions().add(origin).add(coords).width(10f).color(
                     Color.DKGRAY).geodesic(true).clickable(true).zIndex(1.0f))
-            mMap.addMarker(MarkerOptions()
+            /*mMap.addMarker(MarkerOptions()
                 .position(SphericalUtil.interpolate(origin,coords,0.5))
                 .flat(true)
                 .title("Distanz:")
-                .snippet("${((SphericalUtil.computeDistanceBetween(origin, coords)) / 10).roundToInt().toDouble() / 100} km"))
+                .snippet("${((SphericalUtil.computeDistanceBetween(origin, coords)) / 10).roundToInt().toDouble() / 100} km"))*/
         }.onFailure {
             Toast.makeText(context, "Route konnte nicht hinzugefügt werden", Toast.LENGTH_LONG).show()
             Log.e("Route", "konnte nicht hinzugefügt werden", it)
         }
 
         //bewegt die kamera zwischen die einzelnen marker
-        centre= SphericalUtil.interpolate(centre,coords,0.3)
+
     }
-    mMap.moveCamera(CameraUpdateFactory.newLatLng(centre))
+
 
 }
+
+//alt
+/*fun addLabel(map: GoogleMap, herkunft: List<Country>?, context: Context) {
+    herkunft?.forEach {
+            map.addMarker(
+                MarkerOptions()
+                    .position(LatLng(it.latitude, it.longitude))
+                    .title(it.laendercode)
+                    .snippet("Distanz: ${((SphericalUtil.computeDistanceBetween(germany, LatLng(it.latitude, it.longitude))) / 10).roundToInt().toDouble() / 100} km")
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.positionpin))
+
+                     )
+    } ?: Log.e("Label", "Herkunft ist leer")
+}
+ */

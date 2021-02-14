@@ -15,15 +15,8 @@ import java.net.URL
 
 const val url ="https://sheltered-river-33488.herokuapp.com/"
 
-data class DBResponse(val produce:Produce, val countries:List<Country>, val geojsons:List<JSONObject>, val regional:List<String>?)
+//data class DBResponse(val produce:Produce, val countries:List<Country>, val geojsons:List<JSONObject>, val regional:List<String>?)
 
-fun fetchDeferred(produce: String) : Deferred<Result<Produce?>> {
-    return GlobalScope.async {
-        runCatching {
-            getProduce(produce)
-        }
-    }
-}
 
 //Datenbankcalls
 
@@ -78,39 +71,6 @@ suspend fun getGeoJson(origins:List<String>):List<JSONObject>?{
 }
 
 
-//eine funktion die auf die antwort der API wartet
-suspend fun getDataforProduce(produce:String):DBResponse?{
-     try{
-        var regional:List<String>?=null
-        val produceString = GlobalScope.async{
-            callDatabase(url, "produce/$produce")
-        }.await()
-       //resultat in Objekt konvertieren
-        val curProduce=processResponse(produceString, produceType) as Produce
-        val origins=inSeason(curProduce, currentMonth)
-         if(origins.contains("GER")){
-             regional=origins.fold(listOf()){acc, cur -> if(farmingMethod.contains(cur)) acc+cur else acc}
-         }
-        val countryStrings=makeQuery(origins, "mittelpunkt").map{
-            GlobalScope.async { callDatabase(url,it)}.await()
-        }
-        val curCountries= countryStrings.map{
-            (processResponse(it, countryType) as Mittelpunkt).mittelpunkt[0]
-        }
-        //Mittelpunktliste wird benötigt um Marker dort zu setzen
-        val geoJSONs= makeQuery(origins,"geo_daten").map{
-            GlobalScope.async{ callDatabase(url, it)}.await()
-            }.map{JSONObject(it)}
-        //Wird benötigt zur Markierung der Länder
-
-        return DBResponse(curProduce, curCountries, geoJSONs, regional)
-
-    }catch (e:Exception){
-        Log.e("API", "Query failed", e)
-        return null
-    }
-
-}
 
 //der eigentliche call an die API
 private fun callDatabase(apiUrl:String, query:String):String?{
@@ -162,3 +122,54 @@ val makeQuery: (List<String>, String)->List<String> ={ inputList, listenres->
         }
     }
 }
+
+val makeString:(List<String>?, String, String?)-> String = { inputList, spacer, extra ->
+    val last = extra ?:spacer
+   when(inputList?.size) {
+        1 -> inputList.first()
+        2 -> "${inputList.first()}$last${inputList.last()}"
+       else -> {
+               inputList?.subList(1, inputList.lastIndex - 1)
+                   ?.fold(inputList.first()) { acc, cur -> "$acc$spacer$cur" }
+                   .plus("$last${inputList?.last()}")
+       }
+   }
+}
+
+//alt
+/*
+//eine funktion die auf die antwort der API wartet
+suspend fun getDataforProduce(produce:String):DBResponse?{
+    try{
+        var regional:List<String>?=null
+        val produceString = GlobalScope.async{
+            callDatabase(url, "produce/$produce")
+        }.await()
+        //resultat in Objekt konvertieren
+        val curProduce=processResponse(produceString, produceType) as Produce
+        val origins=inSeason(curProduce, currentMonth)
+        if(origins.contains("GER")){
+            regional=origins.fold(listOf()){acc, cur -> if(farmingMethod.contains(cur)) acc+cur else acc}
+        }
+        val countryStrings=makeQuery(origins, "mittelpunkt").map{
+            GlobalScope.async { callDatabase(url,it)}.await()
+        }
+        val curCountries= countryStrings.map{
+            (processResponse(it, countryType) as Mittelpunkt).mittelpunkt[0]
+        }
+        //Mittelpunktliste wird benötigt um Marker dort zu setzen
+        val geoJSONs= makeQuery(origins,"geo_daten").map{
+            GlobalScope.async{ callDatabase(url, it)}.await()
+        }.map{JSONObject(it)}
+        //Wird benötigt zur Markierung der Länder
+
+        return DBResponse(curProduce, curCountries, geoJSONs, regional)
+
+    }catch (e:Exception){
+        Log.e("API", "Query failed", e)
+        return null
+    }
+
+ */
+
+
