@@ -30,8 +30,18 @@ app.get("/geo_daten/:laendercode", async (req, res)=>{
 })
 
 app.get("/produce", async (req, res) => {
-  const produce = await db.getAllProduce();
-  res.status(200).json({produce});
+  const result = await db.getAllProduce();
+  console.log(result)
+  let produce=[]
+  result.forEach(i=>{
+    console.log(i)
+    produce.push({
+      "typ": i.typ,
+      "name": i.name,
+      "season": JSON.parse("{" + i.season + "}").origin
+    })
+  })
+  res.status(200).send(produce);
 })
 
 const port = process.env.PORT || 8080
