@@ -10,46 +10,74 @@ import org.json.JSONObject
 import java.io.IOException
 import java.util.*
 
-val gson= Gson()
-val currentMonth
-    get() = Calendar.getInstance().get(Calendar.MONTH)
-val monthNames=listOf("Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember")
-val farmingMethod=listOf("la", "gg", "ug", "ga", "fr")
-
-
-//Types der Klassen um die JSONStrings zu kovertieren
-val produceType=object: TypeToken<Produce>(){}.type
-val countryType=object: TypeToken<Mittelpunkt>(){}.type
-
-
-
 //Dataclasses für Datenbankobjekte
 data class Origin(val month:String, val land:List<String>)
 //Beim Fall Deutschland: Eintrag in land, bei verschiedenen Anbauarten das schlechtere
 data class Produce(val type:String, val name:String, val season: List<Origin>)
 data class Mittelpunkt(val mittelpunkt: List<Country>)
-data class Country(val laendercode: String, val latitude: Double, val longitude: Double)
+data class Country(val laendercode: String, val land:String, val latitude: Double, val longitude: Double)
+val gson = Gson()
 
-val inSeason: (Produce?, Int)->List<String> = {produce, month -> produce?.season?.get(month)?.land ?: listOf()} //Falls Produce null ist, wird eine leere liste zurückgegeben
+ class ProduceUtil {
+     val currentMonth
+         get() = Calendar.getInstance().get(Calendar.MONTH)
+     val monthNames = listOf(
+         "Januar",
+         "Februar",
+         "März",
+         "April",
+         "Mai",
+         "Juni",
+         "Juli",
+         "August",
+         "September",
+         "Oktober",
+         "November",
+         "Dezember"
+     )
+     val farmingMethod = listOf("la", "gg", "ug", "ga", "fr")
 
 
-/*val  addToMap:(DBResponse?, GoogleMap, Context, TextView?)-> Unit ={
-        res, mMap, context, textView ->
-    if(res!=null) {
-        if(res.regional!=null)
-            addFarmingMethod(mMap,context,res.regional)
-        else
-            addOrigin(mMap, "Deutschland", germany, R.raw.germany, context)
-        //länder markieren, routenberechen
-        addOutlineFromJSON(mMap, res.geojsons, context)
-        addLabel(mMap,res.countries,context)
-        addRoutes(mMap,res.countries,context,germany, germany)
-        textView?.text="Im ${monthNames[currentMonth]} kann man ${res.produce.name} aus ${res.countries.map{it.laendercode}} kaufen"
-    }
-}*/
+     //Types der Klassen um die JSONStrings zu kovertieren
+     val produceType = object : TypeToken<Produce>() {}.type
+     val countryType = object : TypeToken<Mittelpunkt>() {}.type
 
 
-//TODO: Überlegen wie nötig das sowie DBResponse ist
+     val inSeason: (Produce?, Int) -> List<String> = { produce, month ->
+         produce?.season?.get(month)?.land ?: listOf()
+     } //Falls Produce null ist, wird eine leere liste zurückgegeben
+
+     fun convertUmlaut(wort: String, removeUmlaut: Boolean): String =
+         when (removeUmlaut) {
+             true -> when {
+                 wort.contains("ü") -> wort.replace("ü", "ue")
+                 wort.contains("ö") -> wort.replace("ö", "oe")
+                 wort.contains("ä") -> wort.replace("ä", "ae")
+                 wort.contains("ß") -> wort.replace("ß", "ss")
+                 else -> wort
+             }
+             false -> when {
+                 wort.contains("ue") -> wort.replace("ue", "ü")
+                 wort.contains("oe") -> wort.replace("oe", "ö")
+                 wort.contains("ae") -> wort.replace("ae", "ä")
+                 wort.contains("ss") -> wort.replace("ss", "ß")
+                 else -> wort
+             }
+         }
+
+     val makeString: (List<String>?, String, String?) -> String = { inputList, spacer, extra ->
+         val last = extra ?: spacer
+         when (inputList?.size) {
+             1 -> inputList.first()
+             2 -> "${inputList.first()}$last${inputList.last()}"
+             else -> {
+                 inputList?.subList(1, inputList.lastIndex - 1)
+                     ?.fold(inputList.first()) { acc, cur -> "$acc$spacer$cur" }
+                     .plus("$last${inputList?.last()}")
+             }
+         }
+     }
+ }
 
 //Alt
 val produceListe=listOf("avocado", "erdbeere", "feige", "himbeere", "kartoffel", "mango", "okra", "paprika", "tomate", "zucchini", "lauch", "salatgurke", "grünkohl")
@@ -88,94 +116,8 @@ val countryListe=listOf(
     Triple("TUR", R.raw.turkey, "Türkei"),
     Triple("USA", R.raw.usa, "USA")
 )
-//
 
-/*
-Struktur für GEOJSONs, obsolet
 
-data class GEOStructure(
-    val features: List<Feature>,
-    val type: String
-)
-
-data class Feature(
-    val geometry: Geometry,
-    val properties: Properties,
-    val type: String
-)
-
-data class Geometry(
-    val coordinates: List<List<List<Double>>>,
-    val type: String
-)
-
-data class Properties(
-    val abbrev: String,
-    val abbrev_len: Int,
-    val adm0_a3: String,
-    val adm0_a3_is: String,
-    val adm0_a3_un: Int,
-    val adm0_a3_us: String,
-    val adm0_a3_wb: Int,
-    val adm0_dif: Int,
-    val admin: String,
-    val brk_a3: String,
-    val brk_diff: Int,
-    val brk_group: Any,
-    val brk_name: String,
-    val continent: String,
-    val economy: String,
-    val featurecla: String,
-    val filename: String,
-    val fips_10: Any,
-    val formal_en: String,
-    val formal_fr: Any,
-    val gdp_md_est: Int,
-    val gdp_year: Int,
-    val geou_dif: Int,
-    val geounit: String,
-    val gu_a3: String,
-    val homepart: Int,
-    val income_grp: String,
-    val iso_a2: String,
-    val iso_a3: String,
-    val iso_n3: String,
-    val labelrank: Int,
-    val lastcensus: Int,
-    val level: Int,
-    val long_len: Int,
-    val mapcolor13: Int,
-    val mapcolor7: Int,
-    val mapcolor8: Int,
-    val mapcolor9: Int,
-    val name: String,
-    val name_alt: Any,
-    val name_len: Int,
-    val name_long: String,
-    val name_sort: String,
-    val note_adm0: Any,
-    val note_brk: Any,
-    val pop_est: Int,
-    val pop_year: Int,
-    val postal: String,
-    val region_un: String,
-    val region_wb: String,
-    val scalerank: Int,
-    val sov_a3: String,
-    val sovereignt: String,
-    val su_a3: String,
-    val su_dif: Int,
-    val subregion: String,
-    val subunit: String,
-    val tiny: Int,
-    val type: String,
-    val un_a3: String,
-    val wb_a2: String,
-    val wb_a3: String,
-    val wikipedia: Int,
-    val woe_id: Int
-)
-*/
 //Alt
 fun getCountryName(produce: Produce, currentMonth:Int):String{
     var res=""
@@ -219,27 +161,3 @@ fun getJsonDataFromAsset(context:Context, dateiName:String):String{
     return json
 }
 
-/* wurde durch processResponse ersetzt
-private fun getCountryAsObject(result:String?):Mittelpunkt?{
-    try{
-        //String zu JSON convertieren
-        return gson.fromJson(result, mittelpunktType) as Mittelpunkt
-    }
-    catch(e:Exception){
-        Log.e("API", "Nonvalid Countrydata", e)
-    }
-    return null
-}
-
-
-private fun getSeasonAsObject(result:String?):Produce?{
-    try{
-        //String zu JSON convertieren
-        return gson.fromJson(result, produceType) as Produce
-    }
-    catch(e:Exception){
-        Log.e("API", "Nonvalid Countrydata", e)
-    }
-    return null
-}
-*/

@@ -3,8 +3,14 @@ package com.example.jetsetfood
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
+import android.graphics.Canvas
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.*
@@ -15,30 +21,20 @@ import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import kotlin.math.roundToInt
 
-class MarkerClick(val mMap: GoogleMap, val context: Context, val origin: LatLng):GoogleMap.OnMarkerClickListener{
-    override fun onMarkerClick(marker: Marker?): Boolean {
-        runCatching {
-            mMap.addPolyline(
-                PolylineOptions().add(origin).add(marker?.position).width(10f).color(
-                    Color.DKGRAY
-                ).geodesic(true).clickable(true).zIndex(1.0f)
-            )
-            mMap.addMarker(
-                MarkerOptions()
-                    .position(SphericalUtil.interpolate(origin, marker?.position, 0.5))
-                    .flat(true)
-                    .title("Distanz:")
-                    .snippet(
-                        "${((SphericalUtil.computeDistanceBetween(
-                            origin,
-                            marker?.position
-                        )) / 10).roundToInt().toDouble() / 100} km"
-                    )
-            )
-            Log.d("Marker", "click ${marker?.tag}")
-        }.onSuccess { return true }
-        return true
+val produceUtil=ProduceUtil()
+
+private fun vectorToBitmap(@DrawableRes id : Int, context: Context, scaling:Int): BitmapDescriptor {
+    val vectorDrawable: Drawable? = ResourcesCompat.getDrawable(context.resources,id,null)
+    if (vectorDrawable == null) {
+        Log.e("Markericon", "Resource not found")
+        return BitmapDescriptorFactory.defaultMarker()
     }
+    val bitmap = Bitmap.createBitmap(vectorDrawable.intrinsicWidth/scaling,
+        vectorDrawable.intrinsicHeight/scaling, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
+    vectorDrawable.draw(canvas)
+    return BitmapDescriptorFactory.fromBitmap(bitmap)
 }
 
 //markiert die in herkunft spezifizierten Länder
@@ -84,21 +80,24 @@ fun addOutlineFromJSON(map: GoogleMap, herkunft:List<JSONObject>?, context: Cont
 }
 
 fun addFarmingMethod(map: GoogleMap, context: Context, farmingMethods:List<String>){
-    Log.d("Laenderliste", farmingMethods.fold(""){acc, cur -> acc+""+cur})
-    val blurb=farmingMethods.fold("")
-    { acc, cur -> when (cur.toLowerCase()) {
-        "fr"-> acc + context.getString(R.string.FR)
-        "ug"-> acc + context.getString(R.string.UG)
-        "gg"-> acc + context.getString(R.string.GG)
-        "la"-> acc + context.getString(R.string.LA)
-        "ga"-> acc + context.getString(R.string.GA)
-        else -> "ALARM!"
-    } } //TODO: Infofenster größe anpassen
+    //Log.d("Laenderliste", farmingMethods.fold(""){acc, cur -> acc+""+cur})
+    val blurb= produceUtil.makeString(farmingMethods.map{
+        when (it.toLowerCase()) {
+            "fr"-> context.getString(R.string.FR)
+            "ug"-> context.getString(R.string.UG)
+            "gg"-> context.getString(R.string.GG)
+            "la"-> context.getString(R.string.LA)
+            "ga"-> context.getString(R.string.GA)
+            else -> "ALARM!"
+        }
+    },""," oder ")
+    //TODO: Infofenster größe anpassen evt
     Log.d("Laenderliste", blurb)
     map.addMarker(MarkerOptions()
         .position(germany)
         .title("Deutschland")
         .snippet(blurb)
+        .icon(vectorToBitmap(R.drawable.ic_pinhomedark,context,11))
     )
     val layerGermany= GeoJsonLayer(map, germanyArea, context)
     layerGermany.defaultPolygonStyle.strokeWidth=0f
@@ -115,7 +114,10 @@ fun addFarmingMethod(map: GoogleMap, context: Context, farmingMethods:List<Strin
 fun addOrigin(map: GoogleMap, name:String, position: LatLng, flaeche:Int , context: Context){
     map.addMarker(MarkerOptions()
         .position(position)
-        .title(name))
+        .title(name)
+        .icon(vectorToBitmap(R.drawable.ic_pinhomedark, context, 11))
+    )
+
     val layerGermany= GeoJsonLayer(map, flaeche, context)
     layerGermany.defaultPolygonStyle.strokeWidth=0.0f
     layerGermany.defaultPolygonStyle.fillColor=Color.LTGRAY
@@ -131,10 +133,11 @@ fun addRoutes(mMap: GoogleMap, herkunft:List<Country>?, context: Context, origin
         runCatching {  mMap.addMarker(
             MarkerOptions()
                 .position(coords)
-                .title(country.laendercode)
+                .title(country.land)
                 .snippet("Distanz: ${((SphericalUtil.computeDistanceBetween(origin, coords) / 10).roundToInt().toDouble() / 100)} km")
-                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.positionpin))
                 .flat(true)
+                .icon(vectorToBitmap(R.drawable.ic_pin, context, 11))
+
 
         ).tag=country.laendercode
         }.onFailure {
@@ -143,8 +146,8 @@ fun addRoutes(mMap: GoogleMap, herkunft:List<Country>?, context: Context, origin
         }
         runCatching {
             mMap.addPolyline(
-                PolylineOptions().add(origin).add(coords).width(10f).color(
-                    Color.DKGRAY).geodesic(true).clickable(true).zIndex(1.0f))
+                PolylineOptions().add(origin).add(coords).width(8f).color(
+                    Color.GRAY).geodesic(true).clickable(true).zIndex(1.0f))
             /*mMap.addMarker(MarkerOptions()
                 .position(SphericalUtil.interpolate(origin,coords,0.5))
                 .flat(true)
@@ -176,3 +179,30 @@ fun addRoutes(mMap: GoogleMap, herkunft:List<Country>?, context: Context, origin
     } ?: Log.e("Label", "Herkunft ist leer")
 }
  */
+
+/*
+class MarkerClick(val mMap: GoogleMap, val context: Context, val origin: LatLng):GoogleMap.OnMarkerClickListener{
+    override fun onMarkerClick(marker: Marker?): Boolean {
+        runCatching {
+            mMap.addPolyline(
+                PolylineOptions().add(origin).add(marker?.position).width(10f).color(
+                    Color.DKGRAY
+                ).geodesic(true).clickable(true).zIndex(1.0f)
+            )
+            mMap.addMarker(
+                MarkerOptions()
+                    .position(SphericalUtil.interpolate(origin, marker?.position, 0.5))
+                    .flat(true)
+                    .title("Distanz:")
+                    .snippet(
+                        "${((SphericalUtil.computeDistanceBetween(
+                            origin,
+                            marker?.position
+                        )) / 10).roundToInt().toDouble() / 100} km"
+                    )
+            )
+            Log.d("Marker", "click ${marker?.tag}")
+        }.onSuccess { return true }
+        return true
+    }
+}*/
