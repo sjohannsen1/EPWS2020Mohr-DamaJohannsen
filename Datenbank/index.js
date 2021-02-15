@@ -30,11 +30,9 @@ app.get("/geo_daten/:laendercode", async (req, res)=>{
 })
 
 app.get("/produce", async (req, res) => {
-  const result = await db.getAllProduce();
-  console.log(result)
+  const result = await db.getAllProduce()
   let produce=[]
   result.forEach(i=>{
-    console.log(i)
     produce.push({
       "typ": i.typ,
       "name": i.name,
