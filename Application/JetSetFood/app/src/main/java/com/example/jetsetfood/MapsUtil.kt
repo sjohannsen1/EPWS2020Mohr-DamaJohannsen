@@ -23,7 +23,7 @@ import kotlin.math.roundToInt
 
 val produceUtil=ProduceUtil()
 
-private fun vectorToBitmap(@DrawableRes id : Int, context: Context, scaling:Int): BitmapDescriptor {
+private fun vectorToBitmap(@DrawableRes id : Int, context: Context, scaling:Int=11): BitmapDescriptor {
     val vectorDrawable: Drawable? = ResourcesCompat.getDrawable(context.resources,id,null)
     if (vectorDrawable == null) {
         Log.e("Markericon", "Resource not found")
@@ -97,7 +97,7 @@ fun addFarmingMethod(map: GoogleMap, context: Context, farmingMethods:List<Strin
         .position(germany)
         .title("Deutschland")
         .snippet(blurb)
-        .icon(vectorToBitmap(R.drawable.ic_pinhomedark,context,11))
+        .icon(vectorToBitmap(R.drawable.ic_pinhomedark,context))
     )
     val layerGermany= GeoJsonLayer(map, germanyArea, context)
     layerGermany.defaultPolygonStyle.strokeWidth=0f
@@ -115,7 +115,7 @@ fun addOrigin(map: GoogleMap, name:String, position: LatLng, flaeche:Int , conte
     map.addMarker(MarkerOptions()
         .position(position)
         .title(name)
-        .icon(vectorToBitmap(R.drawable.ic_pinhomedark, context, 11))
+        .icon(vectorToBitmap(R.drawable.ic_pinhomedark, context))
     )
 
     val layerGermany= GeoJsonLayer(map, flaeche, context)
@@ -136,7 +136,7 @@ fun addRoutes(mMap: GoogleMap, herkunft:List<Country>?, context: Context, origin
                 .title(country.land)
                 .snippet("Distanz: ${((SphericalUtil.computeDistanceBetween(origin, coords) / 10).roundToInt().toDouble() / 100)} km")
                 .flat(true)
-                .icon(vectorToBitmap(R.drawable.ic_pin, context, 11))
+                .icon(vectorToBitmap(R.drawable.ic_pin, context))
 
 
         ).tag=country.laendercode

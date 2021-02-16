@@ -71,7 +71,7 @@ val gson = Gson()
              1 -> inputList.first()
              2 -> "${inputList.first()}$last${inputList.last()}"
              else -> {
-                 inputList?.subList(1, inputList.lastIndex - 1)
+                 inputList?.subList(1, inputList.lastIndex)
                      ?.fold(inputList.first()) { acc, cur -> "$acc$spacer$cur" }
                      .plus("$last${inputList?.last()}")
              }

@@ -51,6 +51,7 @@ class PrototypeMap : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     override fun onMarkerClick(marker: Marker?): Boolean {
+        Log.d("Marker", "click")
         Log.e("Marker", "click ${marker?.tag}")
         if(marker?.tag!="GER") {
             runBlocking {
@@ -104,7 +105,8 @@ class PrototypeMap : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                     }*/
                     var displayCountries =
-                        countries.await()?.first?.map { it.land }//TODO: Wenn voll ländernamen geadded wurden ändern
+                        countries.await()?.first?.map { it.land }
+                    Log.d("countries", displayCountries.toString())
                     //addLabel(mMap, countries.await()?.first, this@PrototypeMap)
                     if (!countries.await()?.second.isNullOrEmpty()) {
                         addFarmingMethod(mMap, this@PrototypeMap, countries.await()?.second!!)
