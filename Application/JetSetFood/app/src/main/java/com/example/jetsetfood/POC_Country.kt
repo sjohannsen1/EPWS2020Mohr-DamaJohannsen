@@ -40,9 +40,6 @@ class POC_Country : AppCompatActivity(), OnMapReadyCallback {
      * installed Google Play services and returned to the app.
      */
 
-    fun addOutline(geoJson:JSONObject){
-
-    }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap

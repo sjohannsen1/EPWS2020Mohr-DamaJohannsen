@@ -2,11 +2,8 @@ package com.example.jetsetfood
 
 import android.content.Context
 import android.util.Log
-import android.widget.TextView
-import com.google.android.gms.maps.GoogleMap
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import org.json.JSONObject
 import java.io.IOException
 import java.util.*
 
@@ -79,65 +76,7 @@ val gson = Gson()
      }
  }
 
-//Alt
-val produceListe=listOf("avocado", "erdbeere", "feige", "himbeere", "kartoffel", "mango", "okra", "paprika", "tomate", "zucchini", "lauch", "salatgurke", "grünkohl")
 
-val produceString= produceListe.fold(""){acc, it -> "$acc\n${it.capitalize()} "}
-
-val countryListe=listOf(
-    Triple("AUS", R.raw.australia, "Australien"),
-    Triple("BEL", R.raw.belgium, "Belgien"),
-    Triple("BRA", R.raw.australia, "Australien"),
-    Triple("CHL", R.raw.chile, "Chile"),
-    Triple("KEN", R.raw.kenya, "Kenia"),
-    Triple("THA", R.raw.thailand, "Thailand"),
-    Triple("CRI", R.raw.costarica, "Costa Rica"),
-    Triple("CYP", R.raw.cyprus, "Zypern"),
-    Triple("ECU", R.raw.ecuador, "Ecuador"),
-    Triple("EGY", R.raw.egypt, "Ägypten"),
-    Triple("GER", R.raw.germany, "Deutschland"),
-    Triple("GRC", R.raw.greece, "Griechenland"),
-    Triple("GTM", R.raw.guatemala, "Guatemala"),
-    Triple("ISR", R.raw.israel, "Israel"),
-    Triple("ITA", R.raw.italy, "Italien"),
-    Triple("CIV", R.raw.ivorycoast, "Elfenbeinküste"),
-    Triple("LUX", R.raw.louxemburg, "Luxemburg"),
-    Triple("MEX", R.raw.mexico, "Mexiko"),
-    Triple("MAR", R.raw.morroco, "Marokko"),
-    Triple("NLD", R.raw.netherlands, "Niederlande"),
-    Triple("NZL", R.raw.newzealand, "Neuseeland"),
-    Triple("PAK", R.raw.pakistan, "Pakistan"),
-    Triple("PER", R.raw.peru, "Peru"),
-    Triple("PRI", R.raw.puertorico, "Puerto Rico"),
-    Triple("ZAF", R.raw.southafrica, "Südafrika"),
-    Triple("ESP", R.raw.spain, "Spanien"),
-    Triple("THA", R.raw.thailand, "Thailand"),
-    Triple("TUN", R.raw.tunisia, "Tunesien"),
-    Triple("TUR", R.raw.turkey, "Türkei"),
-    Triple("USA", R.raw.usa, "USA")
-)
-
-
-//Alt
-fun getCountryName(produce: Produce, currentMonth:Int):String{
-    var res=""
-    produce.season[currentMonth].land.forEach{ land ->
-        countryListe.forEach{
-            if(it.first==land)
-                res+="${it.third}, "
-        }
-    }
-    return res
-}
-
-//Alr
-fun getCountryJSONs(countries:List<String>):List<JSONObject>{
-    var res= listOf<JSONObject>()
-    countries.forEach{
-        res+=JSONObject(it)
-    }
-    return res
-}
 
 //Alt
 fun getJsonDataFromAsset(context:Context, dateiName:String):String{

@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">JetSetFood</string>
-    <string name="title_activity_maps">POC: Markierung der Länder</string>
+    <string name="title_activity_maps">JetSetFood</string>
     <string name="title_activity_poc__country">Highlight Country</string>
     <string name="title_activity_route">POC: Routen</string>
+    <string name="title_activity_prototype_map">JetSetFood</string>
     <string name="title_activity_POC__Data_Req">POC: Eingabe und Saisonkalender</string>
     <string name="produce_input">Obst oder Gemüsesorte</string>
     <string name="produce_enter">Herkunft herausfinden</string>
@@ -11,4 +12,6 @@
     <string name="GG">Anbau in beheiztem Gewächshaus</string>
     <string name="UG">Anbau in un- oder schwach geheiztem Gewächshaus</string>
     <string name="LA">Lagerware</string>
+    <string name="produceListe">Unterstützes Obst und Gemüse: \n\n%1$s </string>
+    <string name="saisonkalender"> Im %1$s kann man %2$s aus %3$s kaufen</string>
 </resources>

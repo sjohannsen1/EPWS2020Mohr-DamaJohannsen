@@ -1,6 +1,6 @@
 package com.example.jetsetfood
 
-
+/*
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -31,7 +31,7 @@ class POC_DataReq: AppCompatActivity() {
 
 
         //Knopf soll auf Antippen die Eingabe überprüfen und ggf. das zur eingabe gehörige Datenblatt ausgeben
-        /*button.setOnClickListener{
+        button.setOnClickListener{
             if(produceInput.text.toString().isEmpty())
                 produceInput.error=("Bitte gib eine Obst oder Gemüsesorte ein")
 
@@ -54,6 +54,7 @@ class POC_DataReq: AppCompatActivity() {
         }
 
 
-*/
+
     }
 }
+*/

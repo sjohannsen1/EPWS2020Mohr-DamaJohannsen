@@ -11,7 +11,8 @@ android:orientation = "vertical">
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/eingabe"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingTop="16dip">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/produce"
@@ -34,7 +35,7 @@ android:orientation = "vertical">
             android:paddingLeft="32dip"
             android:paddingTop="32dip"
             android:paddingRight="32dip"
-            android:text="TextView"
+            android:text="@string/produceListe"
             android:textAlignment="textStart" />
 
     </com.google.android.material.textfield.TextInputLayout>
