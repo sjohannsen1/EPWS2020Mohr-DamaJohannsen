@@ -31,13 +31,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
-        <activity
-            android:name=".RouteActivity"
-            android:label="@string/title_activity_route" />
-        <activity
-            android:name=".POC_Country"
-            android:label="@string/title_activity_poc__country" />
+        
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps">

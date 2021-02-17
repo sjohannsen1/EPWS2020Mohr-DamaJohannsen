@@ -14,12 +14,9 @@ import kotlinx.coroutines.runBlocking
 
 class MapsActivity : AppCompatActivity(){
     //Handles für die View objekte werden onCreate gesetzt
-    lateinit var produceInput: TextInputEditText
-    lateinit var textView: TextView
-
-    private val produceUtil=ProduceUtil()
-    private val databaseUtil=DatabaseUtil(produceUtil)
-
+    private lateinit var produceInput: TextInputEditText
+    private lateinit var textView: TextView
+    private lateinit var button:Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -28,12 +25,12 @@ class MapsActivity : AppCompatActivity(){
         produceInput=findViewById(R.id.produce)
         textView=findViewById(R.id.datenblatt)
         textView.visibility= View.INVISIBLE
-        val button: Button =findViewById(R.id.click)
+        button=findViewById(R.id.click)
 
         //Alle unterstützen Produkte aus der Datenbank extrahieren
         val produceList=runBlocking {
-            async{ databaseUtil.getProduceList().map { cur ->
-                produceUtil.convertUmlaut(cur.name,false)
+            async{ DatabaseUtil.getProduceList().map { cur ->
+                ProduceUtil.convertUmlaut(cur.name,false)
             }
             }.await()
         }
@@ -50,7 +47,7 @@ class MapsActivity : AppCompatActivity(){
                     "Dieses Obst oder Gemüse wird leider noch nicht unterstützt!"
 
                 //Gibt unterstütze Produkte aus
-                textView.text= getString(R.string.produceListe, produceUtil.makeString(produceList, "\n", null))
+                textView.text= getString(R.string.produceListe, ProduceUtil.makeString(produceList, "\n", null))
                 textView.visibility= View.VISIBLE
             }
             else {

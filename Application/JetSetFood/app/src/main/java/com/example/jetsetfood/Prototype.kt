@@ -15,8 +15,6 @@ class Prototype : AppCompatActivity() {
 
     lateinit var produceInput:TextInputEditText
     lateinit var textView:TextView
-    private val produceUtil=ProduceUtil()
-    private val databaseUtil=DatabaseUtil(produceUtil)
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -26,9 +24,9 @@ class Prototype : AppCompatActivity() {
         textView=findViewById(R.id.datenblatt)
         textView.visibility=View.INVISIBLE
         val button:Button=findViewById(R.id.click)
-        val produceList=runBlocking {
-            async{ databaseUtil.getProduceList().map { cur ->
-                produceUtil.convertUmlaut(cur.name,false)
+        val produceList:List<String> =runBlocking {
+            async{ DatabaseUtil.getProduceList().map { cur ->
+                ProduceUtil.convertUmlaut(cur.name,false)
             }
             }.await()
         }
@@ -36,12 +34,12 @@ class Prototype : AppCompatActivity() {
                 if(produceInput.text.toString().isEmpty())
                     produceInput.error=("Bitte gib eine Obst oder Gemüsesorte ein")
                 //else if(!produceListe.contains(produceInput.text.toString().toLowerCase())) {
-                else if(!produceList.map { it.toLowerCase() }.contains(produceInput.text.toString().toLowerCase())) {
+                else if(! produceList?.map { it.toLowerCase() }?.contains(produceInput.text.toString().toLowerCase())) {
                     Log.d("ProduceList", "input: ${produceInput.text}")
                     //produceliste=API get /produce
                     produceInput.error =
                         "Dieses Obst oder Gemüse wird leider noch nicht unterstützt!"
-                    textView.text="Unterstützes Obst und Gemüse: \n${produceUtil.makeString(produceList, "\n", null)} "
+                    textView.text="Unterstützes Obst und Gemüse: \n${ProduceUtil.makeString(produceList, "\n", null)} "
                     //textView.text=produceList.toString()
                     textView.visibility= View.VISIBLE
                 }

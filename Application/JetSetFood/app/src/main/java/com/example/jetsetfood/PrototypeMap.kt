@@ -25,9 +25,6 @@ class PrototypeMap : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private lateinit var polylineCollection: PolylineManager.Collection
     private lateinit var polylineManager: PolylineManager
 
-    //Objekte für die Utilities
-    private val produceUtil=ProduceUtil()
-    private val database=DatabaseUtil(produceUtil)
 
     //um layer wieder entfernen zu können werden sie zwischengespeichert
     private var layerOnMap:GeoJsonLayer?=null
@@ -35,8 +32,6 @@ class PrototypeMap : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     //Um die Lesbarkeit zu verbessern
     private val context=this@PrototypeMap
 
-
-    val germany = LatLng(51.5167, 9.9167)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,9 +54,9 @@ class PrototypeMap : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
             runBlocking {
                     val geoJSON = async {
-                        database.getGeoJson(marker?.tag as String)
+                        DatabaseUtil.getGeoJson(marker?.tag as String)
                     }
-                    layerOnMap=addOutlineFromJSONClustered(mMap, geoJSON.await(), context, markerManager)
+                    layerOnMap=MapsUtil.addOutlineFromJSONClustered(mMap, geoJSON.await(), context, markerManager,polylineManager)
 
                 }
         }
@@ -74,15 +69,19 @@ class PrototypeMap : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     override fun onPolylineClick(polyline: Polyline?) {
         Log.e("Polyline", "click ${polyline?.tag}")
         if(polyline?.tag!="GER") {
+            if(layerOnMap!=null) {
+                layerOnMap?.removeLayerFromMap()
+            }
             runBlocking {
                 val geoJSON = async {
-                    database.getGeoJson(polyline?.tag as String)
+                    DatabaseUtil.getGeoJson(polyline?.tag as String)
                 }
-                addOutlineFromJSONClustered(mMap, geoJSON.await(), context, markerManager)
+                layerOnMap=MapsUtil.addOutlineFromJSONClustered(mMap, geoJSON.await(), context, markerManager,polylineManager)
 
             }
         }
-    }
+        }
+
 
     override fun onMapReady(googleMap: GoogleMap) {
         //lateinit vars setzen
@@ -101,15 +100,15 @@ class PrototypeMap : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
             //Die Nutzeranfrage aus Intent extrahieren und an die API senden
             val produce= async{
-                database.getProduce(intent.extras?.getString("input")!!)
+                DatabaseUtil.getProduce(intent.extras?.getString("input")!!)
             }.await()
 
             //Wenn das Produceobjekt da ist, Saisonkalender extrahieren und Länder und Routen markieren
             when {
                 produce != null -> {
-                    val origin = produceUtil.inSeason(produce, produceUtil.currentMonth)
+                    val origin = ProduceUtil.inSeason(produce, ProduceUtil.currentMonth)
                     val countries = async {
-                        database.getOrigin(origin)
+                        DatabaseUtil.getOrigin(origin)
                     }
                     var displayCountries =
                         countries.await()?.first?.map { it.land }
@@ -118,19 +117,19 @@ class PrototypeMap : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     //Falls Anbaumethoden vorhanden sind, werden diese auf der Karte eingetragen
                     if (!countries.await()?.second.isNullOrEmpty()) {
 
-                        addFarmingMethodClustered(mMap, context, countries.await()?.second!!,markerManager,polylineManager)
+                        MapsUtil.addFarmingMethodClustered(mMap, context, countries.await()?.second!!,markerManager,polylineManager)
                         displayCountries = displayCountries?.plus(listOf("Deutschland"))
 
                     } else
 
                         //Sonst soll Deutschland nur als Heimatland markiert werden
-                        addOriginClustered(mMap, "Deutschland", germany, R.raw.germany, context, markerManager, polylineManager)
+                        MapsUtil.addOriginClustered(mMap, "Deutschland", MapsUtil.germany, MapsUtil.germanyArea, context, markerManager, polylineManager)
 
                     //Routen und Marker werden hinzugefügt
-                    addRoutesClustered(countries.await()?.first, context,germany,markerCollection, polylineCollection, onMarkerClick = context, onPolyClick = context)
+                    MapsUtil.addRoutesClustered(countries.await()?.first, context,MapsUtil.germany,markerCollection, polylineCollection, onMarkerClick = context, onPolyClick = context)
 
                     //Saisonkalender wird im TextView angezeigt
-                    textView.text=getString(R.string.saisonkalender,produceUtil.monthNames[produceUtil.currentMonth],produceUtil.convertUmlaut(produce.name, false),produceUtil.makeString(
+                    textView.text=getString(R.string.saisonkalender,ProduceUtil.monthNames[ProduceUtil.currentMonth],ProduceUtil.convertUmlaut(produce.name, false),ProduceUtil.makeString(
                         displayCountries,
                         ", ",
                         " oder "

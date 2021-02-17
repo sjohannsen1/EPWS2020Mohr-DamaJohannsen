@@ -20,79 +20,59 @@ import com.google.maps.android.data.geojson.GeoJsonLayer
 import org.json.JSONObject
 import kotlin.math.roundToInt
 
-val produceUtil=ProduceUtil()
+object MapsUtil {
 
-val germany = LatLng(51.5167, 9.9167 )
-val germanyArea=R.raw.germany
+    val germany = LatLng(51.5167, 9.9167)
+    const val germanyArea = R.raw.germany
 
-private fun vectorToBitmap(@DrawableRes id : Int, context: Context, scaling:Int=11): BitmapDescriptor {
-    val vectorDrawable: Drawable? = ResourcesCompat.getDrawable(context.resources,id,null)
-    if (vectorDrawable == null) {
-        Log.e("Markericon", "Resource not found")
-        return BitmapDescriptorFactory.defaultMarker()
-    }
-    val bitmap = Bitmap.createBitmap(vectorDrawable.intrinsicWidth/scaling,
-        vectorDrawable.intrinsicHeight/scaling, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(bitmap)
-    vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
-    vectorDrawable.draw(canvas)
-    return BitmapDescriptorFactory.fromBitmap(bitmap)
-}
-
-
-//markiert die in herkunft spezifizierten Länder
-fun addOutlineFromJSONClustered1(map: GoogleMap, herkunft:List<JSONObject>?, context: Context, markerManager: MarkerManager){
-    if(herkunft==null || herkunft.isEmpty()){
-        Toast.makeText(context, "Zu diesem Produkt existieren keine Herkunftsinformationen", Toast.LENGTH_LONG).show()
-        //Gibt Fehlermeldung aus, das keine Herkunftsinfos vorliegen
-    }
-    else {
-        herkunft.forEach {
-            //Überprüft ob Objekt in der Liste eine GEOJson Datei im richtigen Format ist
-            runCatching {
-                GeoJsonLayer(map, it,markerManager, PolygonManager(map), PolylineManager(map), GroundOverlayManager(map))
-                //Wenn nicht wird ein Toast angezeigt
-            }.onFailure {
-                Toast.makeText(context, "Land kann nicht markiert werden", Toast.LENGTH_LONG)
-                    .show()
-                Log.e("GeoJson", "konnte nicht eingelesen werden", it)
-            }
-                //Wenn schon werden die Daten angezeigt und das Land kann markiert werden
-                .onSuccess { layer ->
-                    layer.defaultPolygonStyle.strokeWidth = 0.0f
-                    layer.defaultPolygonStyle.fillColor = Color.DKGRAY
-                    layer.addLayerToMap()
-
-                    if (!layer.isLayerOnMap) {
-                        Toast.makeText(
-                            context,
-                            "Land kann nicht markiert werden",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        Log.e("GeoJson", "Layer konnte nicht zur Karte hinzugefügt werden")
-                        //Gibt Fehlermeldung aus, das Länder nicht markiert werden können
-                    }
-
-                    //wenn Land angeklickt wird sollen routen angezeigt werden
-                    //layer.setOnFeatureClickListener(onClick)
-                }
-
-
+    private fun vectorToBitmap(
+        @DrawableRes id: Int,
+        context: Context,
+        scaling: Int = 11
+    ): BitmapDescriptor {
+        val vectorDrawable: Drawable? = ResourcesCompat.getDrawable(context.resources, id, null)
+        if (vectorDrawable == null) {
+            Log.e("Markericon", "Resource not found")
+            return BitmapDescriptorFactory.defaultMarker()
         }
+        val bitmap = Bitmap.createBitmap(
+            vectorDrawable.intrinsicWidth / scaling,
+            vectorDrawable.intrinsicHeight / scaling, Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(bitmap)
+        vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
+        vectorDrawable.draw(canvas)
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
-}
 
-//markiert die in herkunft spezifizierten Länder
-fun addOutlineFromJSONClustered(map: GoogleMap, herkunft:JSONObject?, context: Context, markerManager: MarkerManager):GeoJsonLayer? =
-    if(herkunft==null){
-        Toast.makeText(context, "Zu diesem Produkt existieren keine Herkunftsinformationen", Toast.LENGTH_LONG).show()
-        //Gibt Fehlermeldung aus, das keine Herkunftsinfos vorliegen, und gibt null zurück
-        null
-    }
-    else {
+
+    //markiert die in herkunft spezifizierten Länder
+    fun addOutlineFromJSONClustered(
+        map: GoogleMap,
+        herkunft: JSONObject?,
+        context: Context,
+        markerManager: MarkerManager,
+        polylineManager: PolylineManager
+    ): GeoJsonLayer? =
+        if (herkunft == null) {
+            Toast.makeText(
+                context,
+                "Zu diesem Produkt existieren keine Herkunftsinformationen",
+                Toast.LENGTH_LONG
+            ).show()
+            //Gibt Fehlermeldung aus, das keine Herkunftsinfos vorliegen, und gibt null zurück
+            null
+        } else {
             //Überprüft ob Objekt eine GEOJson Datei im richtigen Format ist
-        val layer= runCatching {
-               GeoJsonLayer(map, herkunft,markerManager, PolygonManager(map), PolylineManager(map), GroundOverlayManager(map))
+            val layer = runCatching {
+                GeoJsonLayer(
+                    map,
+                    herkunft,
+                    markerManager,
+                    PolygonManager(map),
+                    polylineManager,
+                    GroundOverlayManager(map)
+                )
 
                 //Wenn nicht wird ein Toast angezeigt
             }.onFailure {
@@ -122,54 +102,78 @@ fun addOutlineFromJSONClustered(map: GoogleMap, herkunft:JSONObject?, context: C
         }
 
 
-
-
-
-fun addFarmingMethodClustered(map: GoogleMap, context: Context, farmingMethods:List<String>, markerManager: MarkerManager, polylineManager: PolylineManager){
-    //Log.d("Laenderliste", farmingMethods.fold(""){acc, cur -> acc+""+cur})
-    val blurb= produceUtil.makeString(farmingMethods.map{
-        when (it.toLowerCase()) {
-            "fr"-> context.getString(R.string.FR)
-            "ug"-> context.getString(R.string.UG)
-            "gg"-> context.getString(R.string.GG)
-            "la"-> context.getString(R.string.LA)
-            "ga"-> context.getString(R.string.GA)
-            else -> "ALARM! + $it"
+    fun addFarmingMethodClustered(
+        map: GoogleMap,
+        context: Context,
+        farmingMethods: List<String>,
+        markerManager: MarkerManager,
+        polylineManager: PolylineManager
+    ) {
+        //Log.d("Laenderliste", farmingMethods.fold(""){acc, cur -> acc+""+cur})
+        val blurb = ProduceUtil.makeString(farmingMethods.map {
+            when (it.toLowerCase()) {
+                "fr" -> context.getString(R.string.FR)
+                "ug" -> context.getString(R.string.UG)
+                "gg" -> context.getString(R.string.GG)
+                "la" -> context.getString(R.string.LA)
+                "ga" -> context.getString(R.string.GA)
+                else -> "ALARM! + $it"
+            }
+        }, "", " oder ")
+        Log.d("Laenderliste", blurb)
+        map.addMarker(
+            MarkerOptions()
+                .position(germany)
+                .title("Deutschland")
+                .snippet(blurb)
+                .icon(vectorToBitmap(R.drawable.ic_pinhomedark, context))
+        )
+        val layerGermany = GeoJsonLayer(
+            map,
+            germanyArea,
+            context,
+            markerManager,
+            PolygonManager(map),
+            polylineManager,
+            GroundOverlayManager(map)
+        )
+        layerGermany.defaultPolygonStyle.strokeWidth = 0f
+        when {
+            farmingMethods.contains("gg") -> layerGermany.defaultPolygonStyle.fillColor =
+                context.getColor(R.color.red)
+            farmingMethods.contains("ug") || farmingMethods.contains("la") || farmingMethods.contains(
+                "ga"
+            ) -> layerGermany.defaultPolygonStyle.fillColor = context.getColor(R.color.orange)
+            farmingMethods.contains("fr") -> layerGermany.defaultPolygonStyle.fillColor =
+                context.getColor(R.color.green)
         }
-    },""," oder ")
-    Log.d("Laenderliste", blurb)
-    map.addMarker(MarkerOptions()
-        .position(germany)
-        .title("Deutschland")
-        .snippet(blurb)
-        .icon(vectorToBitmap(R.drawable.ic_pinhomedark,context))
-    )
-    val layerGermany= GeoJsonLayer(map, germanyArea, context, markerManager, PolygonManager(map), polylineManager, GroundOverlayManager(map))
-    layerGermany.defaultPolygonStyle.strokeWidth=0f
-    when {
-        farmingMethods.contains("gg") -> layerGermany.defaultPolygonStyle.fillColor=context.getColor(R.color.red)
-        farmingMethods.contains("ug") || farmingMethods.contains("la") || farmingMethods.contains("ga") -> layerGermany.defaultPolygonStyle.fillColor=context.getColor(R.color.orange)
-        farmingMethods.contains("fr") -> layerGermany.defaultPolygonStyle.fillColor=context.getColor(R.color.green)
+        layerGermany.addLayerToMap()
+
     }
-    layerGermany.addLayerToMap()
 
-}
+    //Markiert Deutschland als Heimatland, kann durch Geolocating geändert werden
+    fun addOriginClustered(
+        map: GoogleMap,
+        name: String, position: LatLng, flaeche: Int,
+        context: Context,
+        markerManager: MarkerManager,
+        polylineManager: PolylineManager
+    ) {
+        map.addMarker(
+            MarkerOptions()
+                .position(position)
+                .title(name)
+                .icon(vectorToBitmap(R.drawable.ic_pinhomedark, context))
+        )
 
-//Markiert Deutschland als Heimatland, kann durch Geolocating geändert werden
-fun addOriginClustered(map: GoogleMap, name:String, position: LatLng, flaeche:Int , context: Context, markerManager: MarkerManager, polylineManager: PolylineManager){
-    map.addMarker(MarkerOptions()
-        .position(position)
-        .title(name)
-        .icon(vectorToBitmap(R.drawable.ic_pinhomedark, context))
-    )
-
-    val layerGermany= GeoJsonLayer(map, flaeche,  context, markerManager, PolygonManager(map),
-        polylineManager, GroundOverlayManager(map))
-    layerGermany.defaultPolygonStyle.strokeWidth=0.0f
-    layerGermany.defaultPolygonStyle.fillColor=Color.LTGRAY
-    layerGermany.addLayerToMap()
-}
-
+        val layerGermany = GeoJsonLayer(
+            map, flaeche, context, markerManager, PolygonManager(map),
+            polylineManager, GroundOverlayManager(map)
+        )
+        layerGermany.defaultPolygonStyle.strokeWidth = 0.0f
+        layerGermany.defaultPolygonStyle.fillColor = Color.LTGRAY
+        layerGermany.addLayerToMap()
+    }
 
 
 //fügt Polylines zwischen Deutschland und den Herkunftsländern
@@ -183,7 +187,7 @@ fun addOriginClustered(map: GoogleMap, name:String, position: LatLng, flaeche:In
         markerCollection: MarkerManager.Collection,
         polylineCollection: PolylineManager.Collection,
         onMarkerClick: GoogleMap.OnMarkerClickListener,
-        onPolyClick:GoogleMap.OnPolylineClickListener
+        onPolyClick: GoogleMap.OnPolylineClickListener
 
     ) {
         herkunft?.forEach { country ->
@@ -205,7 +209,7 @@ fun addOriginClustered(map: GoogleMap, name:String, position: LatLng, flaeche:In
 
                 ).tag = country.laendercode
                 markerCollection.setOnMarkerClickListener(onMarkerClick)
-
+                Log.d("Marker", country.latitude.toString()+country.longitude)
             }.onFailure {
                 Toast.makeText(
                     context,
@@ -215,11 +219,11 @@ fun addOriginClustered(map: GoogleMap, name:String, position: LatLng, flaeche:In
                 Log.e("Marker", "konnte nicht hinzugefügt werden", it)
             }
             runCatching {
-                    polylineCollection.addPolyline(
+                polylineCollection.addPolyline(
                     PolylineOptions().add(origin).add(coords).width(8f).color(
                         Color.GRAY
                     ).geodesic(true).clickable(true).zIndex(1.0f)
-                ).tag=country.laendercode
+                ).tag = country.laendercode
                 polylineCollection.setOnPolylineClickListener(onPolyClick)
             }.onFailure {
                 Toast.makeText(context, "Route konnte nicht hinzugefügt werden", Toast.LENGTH_LONG)
@@ -235,157 +239,172 @@ fun addOriginClustered(map: GoogleMap, name:String, position: LatLng, flaeche:In
     }
 
 
-//alt
-fun addOrigin(map: GoogleMap, name:String, position: LatLng, flaeche:Int , context: Context){
-    map.addMarker(MarkerOptions()
-        .position(position)
-        .title(name)
-        .icon(vectorToBitmap(R.drawable.ic_pinhomedark, context))
-    )
+    fun addOrigin(map: GoogleMap, name: String, position: LatLng, flaeche: Int, context: Context) {
+        map.addMarker(
+            MarkerOptions()
+                .position(position)
+                .title(name)
+                .icon(vectorToBitmap(R.drawable.ic_pinhomedark, context))
+        )
 
-    val layerGermany= GeoJsonLayer(map, flaeche, context)
-    layerGermany.defaultPolygonStyle.strokeWidth=0.0f
-    layerGermany.defaultPolygonStyle.fillColor=Color.LTGRAY
-    layerGermany.addLayerToMap()
-}
-
-/*
-
-fun addRoutes(mMap: GoogleMap, herkunft:List<Country>?, context: Context, origin:LatLng) {
-    herkunft?.forEach { country ->
-        val coords = LatLng(country.latitude, country.longitude)
-        runCatching {
-            mMap.addMarker(
-                MarkerOptions()
-                    .position(coords)
-                    .title(country.land)
-                    .snippet(
-                        "Distanz: ${((SphericalUtil.computeDistanceBetween(
-                            origin,
-                            coords
-                        ) / 10).roundToInt().toDouble() / 100)} km"
-                    )
-                    .flat(true)
-                    .icon(vectorToBitmap(R.drawable.ic_pin, context))
+        val layerGermany = GeoJsonLayer(map, flaeche, context)
+        layerGermany.defaultPolygonStyle.strokeWidth = 0.0f
+        layerGermany.defaultPolygonStyle.fillColor = Color.LTGRAY
+        layerGermany.addLayerToMap()
+    }
 
 
-            ).tag = country.laendercode
-        }.onFailure {
-            Toast.makeText(context, "Markierung konnte nicht hinzugefügt werden", Toast.LENGTH_LONG)
-                .show()
-            Log.e("Marker", "konnte nicht hinzugefügt werden", it)
-        }
-        runCatching {
-            mMap.addPolyline(
-                PolylineOptions().add(origin).add(coords).width(8f).color(
-                    Color.GRAY
-                ).geodesic(true).clickable(true).zIndex(1.0f)
-            )
-            /*mMap.addMarker(MarkerOptions()
+    fun addRoutes(mMap: GoogleMap, herkunft: List<Country>?, context: Context, origin: LatLng) {
+        herkunft?.forEach { country ->
+            val coords = LatLng(country.latitude, country.longitude)
+            runCatching {
+                mMap.addMarker(
+                    MarkerOptions()
+                        .position(coords)
+                        .title(country.land)
+                        .snippet(
+                            "Distanz: ${((SphericalUtil.computeDistanceBetween(
+                                origin,
+                                coords
+                            ) / 10).roundToInt().toDouble() / 100)} km"
+                        )
+                        .flat(true)
+                        .icon(vectorToBitmap(R.drawable.ic_pin, context))
+
+
+                ).tag = country.laendercode
+            }.onFailure {
+                Toast.makeText(
+                    context,
+                    "Markierung konnte nicht hinzugefügt werden",
+                    Toast.LENGTH_LONG
+                )
+                    .show()
+                Log.e("Marker", "konnte nicht hinzugefügt werden", it)
+            }
+            runCatching {
+                mMap.addPolyline(
+                    PolylineOptions().add(origin).add(coords).width(8f).color(
+                        Color.GRAY
+                    ).geodesic(true).clickable(true).zIndex(1.0f)
+                )
+                /*mMap.addMarker(MarkerOptions()
                 .position(SphericalUtil.interpolate(origin,coords,0.5))
                 .flat(true)
                 .title("Distanz:")
                 .snippet("${((SphericalUtil.computeDistanceBetween(origin, coords)) / 10).roundToInt().toDouble() / 100} km"))*/
-        }.onFailure {
-            Toast.makeText(context, "Route konnte nicht hinzugefügt werden", Toast.LENGTH_LONG)
-                .show()
-            Log.e("Route", "konnte nicht hinzugefügt werden", it)
-        }
-
-        //bewegt die kamera zwischen die einzelnen marker
-
-    }
-}
-
-
-
-fun addFarmingMethod(map: GoogleMap, context: Context, farmingMethods:List<String>){
-    //Log.d("Laenderliste", farmingMethods.fold(""){acc, cur -> acc+""+cur})
-    val blurb= produceUtil.makeString(farmingMethods.map{
-        when (it.toLowerCase()) {
-            "fr"-> context.getString(R.string.FR)
-            "ug"-> context.getString(R.string.UG)
-            "gg"-> context.getString(R.string.GG)
-            "la"-> context.getString(R.string.LA)
-            "ga"-> context.getString(R.string.GA)
-            else -> "ALARM!"
-        }
-    },""," oder ")
-    Log.d("Laenderliste", blurb)
-    map.addMarker(MarkerOptions()
-        .position(germany)
-        .title("Deutschland")
-        .snippet(blurb)
-        .icon(vectorToBitmap(R.drawable.ic_pinhomedark,context))
-    )
-    val layerGermany= GeoJsonLayer(map, germanyArea, context)
-    layerGermany.defaultPolygonStyle.strokeWidth=0f
-    when {
-        farmingMethods.contains("gg") -> layerGermany.defaultPolygonStyle.fillColor=context.getColor(R.color.red)
-        farmingMethods.contains("ug") || farmingMethods.contains("la") || farmingMethods.contains("ga") -> layerGermany.defaultPolygonStyle.fillColor=context.getColor(R.color.orange)
-        farmingMethods.contains("fr") -> layerGermany.defaultPolygonStyle.fillColor=context.getColor(R.color.green)
-    }
-    layerGermany.addLayerToMap()
-
-}
-
-
-//markiert die in herkunft spezifizierten Länder
-fun addOutlineFromJSON(map: GoogleMap, herkunft:List<JSONObject>?, context: Context){
-    if(herkunft==null || herkunft.isEmpty()){
-        Toast.makeText(context, "Zu diesem Produkt existieren keine Herkunftsinformationen", Toast.LENGTH_LONG).show()
-        //Gibt Fehlermeldung aus, das keine Herkunftsinfos vorliegen
-    }
-    else {
-        herkunft.forEach {
-            //Überprüft ob Objekt in der Liste eine GEOJson Datei im richtigen Format ist
-            runCatching {
-                GeoJsonLayer(map, it)
-                //Wenn nicht wird ein Toast angezeigt
             }.onFailure {
-                Toast.makeText(context, "Land kann nicht markiert werden", Toast.LENGTH_LONG)
+                Toast.makeText(context, "Route konnte nicht hinzugefügt werden", Toast.LENGTH_LONG)
                     .show()
-                Log.e("GeoJson", "konnte nicht eingelesen werden", it)
+                Log.e("Route", "konnte nicht hinzugefügt werden", it)
             }
-                //Wenn schon werden die Daten angezeigt und das Land kann markiert werden
-                .onSuccess { layer ->
-                    layer.defaultPolygonStyle.strokeWidth = 0.0f
-                    layer.defaultPolygonStyle.fillColor = Color.DKGRAY
-                    layer.addLayerToMap()
 
-                    if (!layer.isLayerOnMap) {
-                        Toast.makeText(
-                            context,
-                            "Land kann nicht markiert werden",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        Log.e("GeoJson", "Layer konnte nicht zur Karte hinzugefügt werden")
-                        //Gibt Fehlermeldung aus, das Länder nicht markiert werden können
+            //bewegt die kamera zwischen die einzelnen marker
+
+        }
+    }
+
+
+    fun addFarmingMethod(map: GoogleMap, context: Context, farmingMethods: List<String>) {
+        //Log.d("Laenderliste", farmingMethods.fold(""){acc, cur -> acc+""+cur})
+        val blurb = ProduceUtil.makeString(farmingMethods.map {
+            when (it.toLowerCase()) {
+                "fr" -> context.getString(R.string.FR)
+                "ug" -> context.getString(R.string.UG)
+                "gg" -> context.getString(R.string.GG)
+                "la" -> context.getString(R.string.LA)
+                "ga" -> context.getString(R.string.GA)
+                else -> "ALARM!"
+            }
+        }, "", " oder ")
+        Log.d("Laenderliste", blurb)
+        map.addMarker(
+            MarkerOptions()
+                .position(germany)
+                .title("Deutschland")
+                .snippet(blurb)
+                .icon(vectorToBitmap(R.drawable.ic_pinhomedark, context))
+        )
+        val layerGermany = GeoJsonLayer(map, germanyArea, context)
+        layerGermany.defaultPolygonStyle.strokeWidth = 0f
+        when {
+            farmingMethods.contains("gg") -> layerGermany.defaultPolygonStyle.fillColor =
+                context.getColor(R.color.red)
+            farmingMethods.contains("ug") || farmingMethods.contains("la") || farmingMethods.contains(
+                "ga"
+            ) -> layerGermany.defaultPolygonStyle.fillColor = context.getColor(R.color.orange)
+            farmingMethods.contains("fr") -> layerGermany.defaultPolygonStyle.fillColor =
+                context.getColor(R.color.green)
+        }
+        layerGermany.addLayerToMap()
+
+    }
+
+
+    //markiert die in herkunft spezifizierten Länder
+    fun addOutlineFromJSON(map: GoogleMap, herkunft: List<JSONObject>?, context: Context) {
+        if (herkunft == null || herkunft.isEmpty()) {
+            Toast.makeText(
+                context,
+                "Zu diesem Produkt existieren keine Herkunftsinformationen",
+                Toast.LENGTH_LONG
+            ).show()
+            //Gibt Fehlermeldung aus, das keine Herkunftsinfos vorliegen
+        } else {
+            herkunft.forEach {
+                //Überprüft ob Objekt in der Liste eine GEOJson Datei im richtigen Format ist
+                runCatching {
+                    GeoJsonLayer(map, it)
+                    //Wenn nicht wird ein Toast angezeigt
+                }.onFailure {
+                    Toast.makeText(context, "Land kann nicht markiert werden", Toast.LENGTH_LONG)
+                        .show()
+                    Log.e("GeoJson", "konnte nicht eingelesen werden", it)
+                }
+                    //Wenn schon werden die Daten angezeigt und das Land kann markiert werden
+                    .onSuccess { layer ->
+                        layer.defaultPolygonStyle.strokeWidth = 0.0f
+                        layer.defaultPolygonStyle.fillColor = Color.DKGRAY
+                        layer.addLayerToMap()
+
+                        if (!layer.isLayerOnMap) {
+                            Toast.makeText(
+                                context,
+                                "Land kann nicht markiert werden",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            Log.e("GeoJson", "Layer konnte nicht zur Karte hinzugefügt werden")
+                            //Gibt Fehlermeldung aus, das Länder nicht markiert werden können
+                        }
+
+                        //wenn Land angeklickt wird sollen routen angezeigt werden
+                        //layer.setOnFeatureClickListener(onClick)
                     }
 
-                    //wenn Land angeklickt wird sollen routen angezeigt werden
-                    //layer.setOnFeatureClickListener(onClick)
-                }
 
-
+            }
         }
     }
-}
 
-fun addLabel(map: GoogleMap, herkunft: List<Country>?, context: Context) {
-    herkunft?.forEach {
+    fun addLabel(map: GoogleMap, herkunft: List<Country>?, context: Context) {
+        herkunft?.forEach {
             map.addMarker(
                 MarkerOptions()
                     .position(LatLng(it.latitude, it.longitude))
                     .title(it.laendercode)
-                    .snippet("Distanz: ${((SphericalUtil.computeDistanceBetween(germany, LatLng(it.latitude, it.longitude))) / 10).roundToInt().toDouble() / 100} km")
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.positionpin))
+                    .snippet(
+                        "Distanz: ${((SphericalUtil.computeDistanceBetween(
+                            germany,
+                            LatLng(it.latitude, it.longitude)
+                        )) / 10).roundToInt().toDouble() / 100} km"
+                    )
+                    .icon(vectorToBitmap(R.drawable.ic_pin, context))
 
-                     )
-    } ?: Log.e("Label", "Herkunft ist leer")
+            )
+        } ?: Log.e("Label", "Herkunft ist leer")
+    }
+
 }
- */
-
 /*
 class MarkerClick(val mMap: GoogleMap, val context: Context, val origin: LatLng):GoogleMap.OnMarkerClickListener{
     override fun onMarkerClick(marker: Marker?): Boolean {

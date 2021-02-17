@@ -1,6 +1,7 @@
 package com.example.jetsetfood
 
 import android.util.Log
+import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -12,13 +13,12 @@ import java.net.URL
 
 
 /**
- * Klasse zum Handling aller Interaktionen mit der Datenbank
- * @param produceUtil Objekt um die AAntworten zu verarbeiten
+ * Objekt zum Handling aller Interaktionen mit der Datenbank
  *
  */
 
-class DatabaseUtil(private val produceUtil: ProduceUtil) {
-
+object DatabaseUtil {
+    private val gson = Gson()
     //Endpunkt der API
     private val URL ="https://sheltered-river-33488.herokuapp.com/"
 
@@ -33,7 +33,7 @@ class DatabaseUtil(private val produceUtil: ProduceUtil) {
                 callDatabase(makeQuery(listOf(produce), "produce").first())
             }.await()
             //resultat in Objekt konvertieren
-            processResponse(produceString, produceUtil.produceType) as Produce
+            processResponse(produceString, ProduceUtil.produceType) as Produce
 
         } catch (e: Exception) {
             Log.e("API", "Produce Query failed", e)
@@ -54,13 +54,13 @@ class DatabaseUtil(private val produceUtil: ProduceUtil) {
             //Überprüft, ob Anbauarten in der Origins Liste vorhanden sind
             if (origins.contains("DEU")) {
                 regional =
-                    origins.fold(listOf()) { acc, cur -> if (produceUtil.farmingMethod.contains(cur.toLowerCase())) acc + cur.toLowerCase() else acc }
+                    origins.fold(listOf()) { acc, cur -> if (ProduceUtil.farmingMethod.contains(cur.toLowerCase())) acc + cur.toLowerCase() else acc }
             }
             val countryStrings = makeQuery(origins, "mittelpunkt").map {
                 GlobalScope.async { callDatabase(it) }.await()
             }
             val curCountries = countryStrings.map {
-                (processResponse(it, produceUtil.countryType) as Mittelpunkt).mittelpunkt[0]
+                (processResponse(it, ProduceUtil.countryType) as Center).mittelpunkt[0]
             }
             Pair(curCountries, regional)
         } catch (e: Exception) {
@@ -173,51 +173,16 @@ class DatabaseUtil(private val produceUtil: ProduceUtil) {
     private val makeQuery: (List<String>, String) -> List<String> = { inputList, listenres ->
         inputList.fold(listOf()) { acc, cur ->
             when {
-                produceUtil.farmingMethod.contains(cur.toLowerCase()) || cur == "DEU" ->
+                ProduceUtil.farmingMethod.contains(cur.toLowerCase()) || cur == "DEU" ->
                     //Sonderfall, es kommt aus Deutschland und in der Liste steht die Anbauart
                     acc
 
-                else -> acc + "$listenres/${produceUtil.convertUmlaut(cur, true)}"
+                else -> acc + "$listenres/${ProduceUtil.convertUmlaut(cur, true)}"
             }
         }
     }
 
 }
 
-//alt
-/*
-//eine funktion die auf die antwort der API wartet
-suspend fun getDataforProduce(produce:String):DBResponse?{
-    try{
-        var regional:List<String>?=null
-        val produceString = GlobalScope.async{
-            callDatabase(url, "produce/$produce")
-        }.await()
-        //resultat in Objekt konvertieren
-        val curProduce=processResponse(produceString, produceType) as Produce
-        val origins=inSeason(curProduce, currentMonth)
-        if(origins.contains("GER")){
-            regional=origins.fold(listOf()){acc, cur -> if(farmingMethod.contains(cur)) acc+cur else acc}
-        }
-        val countryStrings=makeQuery(origins, "mittelpunkt").map{
-            GlobalScope.async { callDatabase(url,it)}.await()
-        }
-        val curCountries= countryStrings.map{
-            (processResponse(it, countryType) as Mittelpunkt).mittelpunkt[0]
-        }
-        //Mittelpunktliste wird benötigt um Marker dort zu setzen
-        val geoJSONs= makeQuery(origins,"geo_daten").map{
-            GlobalScope.async{ callDatabase(url, it)}.await()
-        }.map{JSONObject(it)}
-        //Wird benötigt zur Markierung der Länder
-
-        return DBResponse(curProduce, curCountries, geoJSONs, regional)
-
-    }catch (e:Exception){
-        Log.e("API", "Query failed", e)
-        return null
-    }
-
- */
 
 

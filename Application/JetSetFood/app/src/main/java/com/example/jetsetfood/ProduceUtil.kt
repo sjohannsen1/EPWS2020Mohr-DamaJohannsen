@@ -2,22 +2,31 @@ package com.example.jetsetfood
 
 import android.content.Context
 import android.util.Log
-import com.google.gson.Gson
+import com.google.android.gms.maps.model.LatLng
 import com.google.gson.reflect.TypeToken
 import java.io.IOException
 import java.util.*
 
 //Dataclasses für Datenbankobjekte
-data class Origin(val month:String, val land:List<String>)
-//Beim Fall Deutschland: Eintrag in land, bei verschiedenen Anbauarten das schlechtere
-data class Produce(val type:String, val name:String, val season: List<Origin>)
-data class Mittelpunkt(val mittelpunkt: List<Country>)
-data class Country(val laendercode: String, val land:String, val latitude: Double, val longitude: Double)
-val gson = Gson()
 
- class ProduceUtil {
+data class Origin(val month:String, val land:List<String>)
+data class Produce(val type:String, val name:String, val season: List<Origin>)
+data class Center(val mittelpunkt: List<Country>)
+data class Country(val laendercode: String, val land:String, val latitude: Double, val longitude: Double)/* {
+    val latitudeNorm = latitude % 90
+    val longitudeNorm = longitude % 180
+}*/
+
+
+object ProduceUtil {
+
+    //Types der Klassen um die JSONStrings zu kovertieren
+    val produceType = object : TypeToken<Produce>() {}.type!!
+    val countryType = object : TypeToken<Center>() {}.type!!
+
      val currentMonth
          get() = Calendar.getInstance().get(Calendar.MONTH)
+
      val monthNames = listOf(
          "Januar",
          "Februar",
@@ -33,12 +42,6 @@ val gson = Gson()
          "Dezember"
      )
      val farmingMethod = listOf("la", "gg", "ug", "ga", "fr")
-
-
-     //Types der Klassen um die JSONStrings zu kovertieren
-     val produceType = object : TypeToken<Produce>() {}.type
-     val countryType = object : TypeToken<Mittelpunkt>() {}.type
-
 
      val inSeason: (Produce?, Int) -> List<String> = { produce, month ->
          produce?.season?.get(month)?.land ?: listOf()
