@@ -2,7 +2,6 @@ package com.example.jetsetfood
 
 import android.content.Context
 import android.util.Log
-import com.google.android.gms.maps.model.LatLng
 import com.google.gson.reflect.TypeToken
 import java.io.IOException
 import java.util.*
@@ -12,10 +11,7 @@ import java.util.*
 data class Origin(val month:String, val land:List<String>)
 data class Produce(val type:String, val name:String, val season: List<Origin>)
 data class Center(val mittelpunkt: List<Country>)
-data class Country(val laendercode: String, val land:String, val latitude: Double, val longitude: Double)/* {
-    val latitudeNorm = latitude % 90
-    val longitudeNorm = longitude % 180
-}*/
+data class Country(val laendercode: String, val land:String, val latitude: Double, val longitude: Double)
 
 
 object ProduceUtil {

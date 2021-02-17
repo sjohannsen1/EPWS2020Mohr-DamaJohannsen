@@ -12,7 +12,7 @@ import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 
-class MapsActivity : AppCompatActivity(){
+class PrototypeSearch : AppCompatActivity(){
     //Handles für die View objekte werden onCreate gesetzt
     private lateinit var produceInput: TextInputEditText
     private lateinit var textView: TextView
