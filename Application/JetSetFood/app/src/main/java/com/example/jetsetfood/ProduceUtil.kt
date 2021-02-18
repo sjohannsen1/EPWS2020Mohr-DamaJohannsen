@@ -40,7 +40,9 @@ object ProduceUtil {
      val farmingMethod = listOf("la", "gg", "ug", "ga", "fr")
 
     fun getSeasonGer(produce:Produce?)
-        = produce?.season?.fold(listOf<Int>()){ acc, origin -> if(origin.land.any{it=="DEU"}) acc+produce.season.indexOf(origin) else acc }?.map { monthNames[it] } ?: listOf()
+        = produce?.season?.fold(listOf<Int>()) { acc, origin -> if(origin.land.any{it=="DEU"}) acc+produce.season.indexOf(origin) else acc }
+        ?.map { monthNames[it] }
+        ?: listOf()
 
 
 
