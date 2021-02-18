@@ -13,5 +13,5 @@
     <string name="UG">Anbau in un- oder schwach geheiztem Gewächshaus</string>
     <string name="LA">Lagerware</string>
     <string name="produceListe">Unterstützes Obst und Gemüse: \n\n%1$s </string>
-    <string name="saisonkalender"> Im %1$s kann man %2$s aus %3$s kaufen</string>
+    <string name="saisonkalender"> Im %1$s kann man %2$s aus %3$s kaufen. \n%4$s.</string>
 </resources>

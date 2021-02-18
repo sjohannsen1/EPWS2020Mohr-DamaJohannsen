@@ -112,13 +112,18 @@ class PrototypeMap : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     }
                     var displayCountries =
                         countries.await()?.first?.map { it.land }
-                    Log.d("countries", displayCountries.toString())
+
+                    val monthsInGer=ProduceUtil.getSeasonGer(produce)
+                    val seasonCalender =
+                        if (monthsInGer.isEmpty()) "${ProduceUtil.convertUmlaut(produce.name, false)} wird leider nicht in Deutschland angebaut"
+                        else "${ProduceUtil.convertUmlaut(produce.name, false)} ist im ${ProduceUtil.makeString(monthsInGer, ", ", " oder ")} aus Deutschland verfügbar"
 
                     //Falls Anbaumethoden vorhanden sind, werden diese auf der Karte eingetragen
                     if (!countries.await()?.second.isNullOrEmpty()) {
 
                         MapsUtil.addFarmingMethodClustered(mMap, context, countries.await()?.second!!,markerManager,polylineManager)
                         displayCountries = displayCountries?.plus(listOf("Deutschland"))
+
 
                     } else
 
@@ -133,7 +138,7 @@ class PrototypeMap : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         displayCountries,
                         ", ",
                         " oder "
-                    ))
+                    ), seasonCalender)
                 }
                 else -> Log.e("api", "nebenläufigkeit kaputt ")
             }
