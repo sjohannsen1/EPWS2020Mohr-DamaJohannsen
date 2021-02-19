@@ -13,13 +13,15 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 
 class PrototypeSearch : AppCompatActivity(){
-    //Handles für die View objekte werden onCreate gesetzt
+    //Variablen werden Deklariert. Da sie als erstes in der onCreate gesetzt werden, können sie lateinit sein
     private lateinit var produceInput: TextInputEditText
     private lateinit var textView: TextView
     private lateinit var button:Button
 
+    //Wird bei Aufruf der Aktivity ausgeführt. Hier findet die Logik statt
     override fun onCreate(savedInstanceState: Bundle?) {
 
+        //Graphical User Interface wird verknüpft
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_prototype)
         produceInput=findViewById(R.id.produce)
@@ -34,7 +36,7 @@ class PrototypeSearch : AppCompatActivity(){
             }
             }.await()
         }
-
+        //Legt das onClick verhalten des Buttons fest
         button.setOnClickListener{
             //Nachricht falls die Eingabe leer ist
             if(produceInput.text.toString().isEmpty())

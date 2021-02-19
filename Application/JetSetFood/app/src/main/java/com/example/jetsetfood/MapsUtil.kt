@@ -20,11 +20,25 @@ import com.google.maps.android.data.geojson.GeoJsonLayer
 import org.json.JSONObject
 import kotlin.math.roundToInt
 
+/**
+ * Objekt zum Handling aller Interaktionen mit der Karte
+ *
+ */
+
 object MapsUtil {
 
+    //die Fläche und der Mittelpunkt von Deutschland, um zur Einzeichnung der Herkunft keine Interaktion mit der Dateenbank zu benötigen
     val germany = LatLng(51.5167, 9.9167)
     const val germanyArea = R.raw.germany
 
+    /***
+     * Erzeugt aus einer Vektorgrafik eine Bitmap
+     * @param id: Id der Verktografik
+     * @param context: Kontext um auf die Resourcen zuzugreifen
+     * @param scaling: Skalierung der Bitmap
+     * @return Bitmapdescriptor mit der erzeugten Bitmap
+     * @return Bitmapdescriptor mit dem defaultMarker bei Fehlern
+     */
     private fun vectorToBitmap(
         @DrawableRes id: Int,
         context: Context,
@@ -45,8 +59,15 @@ object MapsUtil {
         return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 
-
-    //markiert die in herkunft spezifizierten Länder
+    /***
+     * Markiert das in herkunft spezifizierte Land als GEOJsonLayer
+     * @param map: Karte auf der das Land eingezeichnet werden soll
+     * @param herkunft: JSONObjekt mit de GEOJson des zu markierenden Landes
+     * @param context: Kontext um Fehlertoast anzuzeigen
+     * @param markerManager: Manager der alle Marker auf der Karte enthält, um onMarkerClick Ereignisse zu erfassen
+     * @param polyloneManager: Manager der alle Polylines auf der Karte enthält, um onPolylineClick Ereignisse zu erfassen
+     * @return das erzeugte GEOJsonLayer
+     */
     fun addOutlineFromJSONClustered(
         map: GoogleMap,
         herkunft: JSONObject?,
@@ -101,7 +122,16 @@ object MapsUtil {
 
         }
 
-
+    /***
+     * Markiert die in farmingMethods spezifizierten Methoden farblich auf der FLäche von Deutschland
+     * und fügt Marker auf Deutschland hinzu der diese textuell enthält
+     * @param map: Karte auf der die Methoden deingezeichnet werden sollen
+     * @param context: Kontext um Fehlertoast anzuzeigen
+     * @param farmingMethods: Liste mit String die die Farmingmethoden enthalten
+     * @param markerManager: Manager der alle Marker auf der Karte enthält, um onMarkerClick Ereignisse zu erfassen
+     * @param polyloneManager: Manager der alle Polylines auf der Karte enthält, um onPolylineClick Ereignisse zu erfassen
+     * @return das erzeugte GEOJsonLayer
+     */
     fun addFarmingMethodClustered(
         map: GoogleMap,
         context: Context,
@@ -109,7 +139,7 @@ object MapsUtil {
         markerManager: MarkerManager,
         polylineManager: PolylineManager
     ) {
-        //Log.d("Laenderliste", farmingMethods.fold(""){acc, cur -> acc+""+cur})
+        //erzeugt String mit Farmingmethoden
         val blurb = ProduceUtil.makeString(farmingMethods.map {
             when (it.toLowerCase()) {
                 "fr" -> context.getString(R.string.FR)
@@ -120,7 +150,7 @@ object MapsUtil {
                 else -> "ALARM! + $it"
             }
         }, "", " oder ")
-        Log.d("Laenderliste", blurb)
+        //fügt Marker auf Deutschland zur Karte hinzu
         map.addMarker(
             MarkerOptions()
                 .position(germany)
@@ -128,6 +158,7 @@ object MapsUtil {
                 .snippet(blurb)
                 .icon(vectorToBitmap(R.drawable.ic_pinhomedark, context))
         )
+        //Fügt Fläche zu Deutschland hinzu
         val layerGermany = GeoJsonLayer(
             map,
             germanyArea,
@@ -137,6 +168,7 @@ object MapsUtil {
             polylineManager,
             GroundOverlayManager(map)
         )
+        //Färbt diese Fläche in Korrelation zu den Anbaumethoden ein
         layerGermany.defaultPolygonStyle.strokeWidth = 0f
         when {
             farmingMethods.contains("gg") -> layerGermany.defaultPolygonStyle.fillColor =
@@ -150,22 +182,30 @@ object MapsUtil {
         layerGermany.addLayerToMap()
 
     }
+    /***
+     * Markiert Heimat/Aufenthaltsland
+     * @param map: Karte auf der das Land eingezeichnet werden soll
+     * @param name, position, fläche: Name, Mittelpunkt und Fläche des Heimat/Aufenthaltslandes
+     * @param context: Kontext um Fehlertoast anzuzeigen
+     * @param markerManager: Manager der alle Marker auf der Karte enthält, um onMarkerClick Ereignisse zu erfassen
+     * @param polyloneManager: Manager der alle Polylines auf der Karte enthält, um onPolylineClick Ereignisse zu erfassen
+     */
 
-    //Markiert Deutschland als Heimatland, kann durch Geolocating geändert werden
     fun addOriginClustered(
         map: GoogleMap,
-        name: String, position: LatLng, flaeche: Int,
+        name: String="Deutschland", position: LatLng = germany, flaeche: Int = germanyArea,
         context: Context,
         markerManager: MarkerManager,
         polylineManager: PolylineManager
     ) {
+        //Fügt Marker im Heimat/Aufenthaltsland hinzu
         map.addMarker(
             MarkerOptions()
                 .position(position)
                 .title(name)
                 .icon(vectorToBitmap(R.drawable.ic_pinhomedark, context))
         )
-
+        //Fügt Fläche des Heimat/Aufenthaltsland hinzu
         val layerGermany = GeoJsonLayer(
             map, flaeche, context, markerManager, PolygonManager(map),
             polylineManager, GroundOverlayManager(map)
@@ -175,15 +215,21 @@ object MapsUtil {
         layerGermany.addLayerToMap()
     }
 
-
-//fügt Polylines zwischen Deutschland und den Herkunftsländern
-//geodesic bedeutet dass die Linie nicht einfach grade ist, sondern sich an der Krümmung der Erdkugel orientiert
-//fügt routen hinzu und fügt auch nen clickable marker hinzu der es ermöglicht, das die distanz angezeigt wird
-
+    /***
+     * fügt Polylines zwischen dem Heimat/Aufenthaltsland und den Herkunftsländern zur Collection hinzu
+     * fügt Marker im Mittelpunkt der Herkunftsländer zur Collection hinzu
+     * @param herkunft: Liste der einzufügenden Länder
+     * @param context: Kontext um Fehlertoast anzuzeigen
+     * @param origin: Mittelpunkt des Heimat/Aufenthaltslandes
+     * @param markerCollection: Collection die alle Marker auf der Karte enthält, um onMarkerClick Ereignisse zu erfassen
+     * @param polyloneCollection: Collection die alle Polylines auf der Karte enthält, um onPolylineClick Ereignisse zu erfassen
+     * @param onMarkerClick: onClickListener in dem steht was bei onClick Ereignissen auf die Marker passieren soll
+     * @param onPolyClick: onClickListener in dem steht was bei onClick Ereignissen auf die Polylines passieren soll
+     */
     fun addRoutesClustered(
         herkunft: List<Country>?,
         context: Context,
-        origin: LatLng,
+        origin: LatLng= germany,
         markerCollection: MarkerManager.Collection,
         polylineCollection: PolylineManager.Collection,
         onMarkerClick: GoogleMap.OnMarkerClickListener,
@@ -211,6 +257,7 @@ object MapsUtil {
                 markerCollection.setOnMarkerClickListener(onMarkerClick)
                 Log.d("Marker", country.latitude.toString()+country.longitude)
             }.onFailure {
+                //Bei Fehlern
                 Toast.makeText(
                     context,
                     "Markierung konnte nicht hinzugefügt werden",
@@ -218,28 +265,32 @@ object MapsUtil {
                 ).show()
                 Log.e("Marker", "konnte nicht hinzugefügt werden", it)
             }
+            //Fügt Routen hinzu
             runCatching {
                 polylineCollection.addPolyline(
                     PolylineOptions().add(origin).add(coords).width(8f).color(
                         Color.GRAY
-                    ).geodesic(true).clickable(true).zIndex(1.0f)
+                    ).geodesic(true) //geodesic bedeutet dass die Linie nicht einfach grade ist, sondern sich an der Krümmung der Erdkugel orientiert
+                        .clickable(true)
+                        .zIndex(1.0f)
                 ).tag = country.laendercode
                 polylineCollection.setOnPolylineClickListener(onPolyClick)
             }.onFailure {
+                //Bei Fehlern
                 Toast.makeText(context, "Route konnte nicht hinzugefügt werden", Toast.LENGTH_LONG)
                     .show()
                 Log.e("Route", "konnte nicht hinzugefügt werden", it)
             }
-
-            //bewegt die kamera zwischen die einzelnen marker
-
         }
-
-
     }
 
-
-    fun addOrigin(map: GoogleMap, name: String, position: LatLng, flaeche: Int, context: Context) {
+    /***
+     * Markiert Heimat/Aufenthaltsland, gewährleisten nicht die Klickbarkeit mehrer Objekte
+     * @param map: Karte auf der das Land eingezeichnet werden soll
+     * @param name, position, fläche: Name, Mittelpunkt und Fläche des Heimat/Aufenthaltslandes
+     * @param context: Kontext um Fehlertoast anzuzeigen
+     */
+    fun addOrigin(map: GoogleMap, name: String="Deutschland", position: LatLng=germany, flaeche: Int= germanyArea, context: Context) {
         map.addMarker(
             MarkerOptions()
                 .position(position)
@@ -253,8 +304,15 @@ object MapsUtil {
         layerGermany.addLayerToMap()
     }
 
-
-    fun addRoutes(mMap: GoogleMap, herkunft: List<Country>?, context: Context, origin: LatLng) {
+    /***
+     * fügt Polylines zwischen dem Heimat/Aufenthaltsland und den Herkunftsländern zur Karte hinzu
+     * fügt Marker im Mittelpunkt der Herkunftsländer zur Karte hinzu
+     * Gewährleistet nicht die Klickbarkeit der einzelnen Elemente
+     * @param herkunft: Liste der einzufügenden Länder
+     * @param context: Kontext um Fehlertoast anzuzeigen
+     * @param origin: Mittelpunkt des Heimat/Aufenthaltslandes
+      */
+    fun addRoutes(mMap: GoogleMap, herkunft: List<Country>?, context: Context, origin: LatLng=germany) {
         herkunft?.forEach { country ->
             val coords = LatLng(country.latitude, country.longitude)
             runCatching {
@@ -304,9 +362,16 @@ object MapsUtil {
         }
     }
 
-
+    /***
+     * Markiert die in farmingMethods spezifizierten Methoden farblich auf der Fläche von Deutschland
+     * und fügt Marker auf Deutschland hinzu der diese textuell enthält
+     * Gewährleistet nicht die Klickbarkeit der einzelnen Elemente
+     * @param map: Karte auf der die Methoden deingezeichnet werden sollen
+     * @param context: Kontext um Fehlertoast anzuzeigen
+     * @param farmingMethods: Liste mit String die die Farmingmethoden enthalten
+     */
     fun addFarmingMethod(map: GoogleMap, context: Context, farmingMethods: List<String>) {
-        //Log.d("Laenderliste", farmingMethods.fold(""){acc, cur -> acc+""+cur})
+
         val blurb = ProduceUtil.makeString(farmingMethods.map {
             when (it.toLowerCase()) {
                 "fr" -> context.getString(R.string.FR)
@@ -340,8 +405,13 @@ object MapsUtil {
 
     }
 
-
-    //markiert die in herkunft spezifizierten Länder
+    /***
+     * Markiert das in herkunft spezifizierte Land als GEOJsonLayer
+     * Gewährleistet nicht die Klickbarkeit der einzelnen Elemente
+     * @param map: Karte auf der das Land eingezeichnet werden soll
+     * @param herkunft: Liste mit JSONObjekten mit der GEOJson der zu markierenden Ländern
+     * @param context: Kontext um Fehlertoast anzuzeigen
+     */
     fun addOutlineFromJSON(map: GoogleMap, herkunft: List<JSONObject>?, context: Context) {
         if (herkunft == null || herkunft.isEmpty()) {
             Toast.makeText(
@@ -385,7 +455,13 @@ object MapsUtil {
             }
         }
     }
-
+    /***
+     * Markiert das in herkunft spezifizierte Land mit einem Marker im Mittelpunkt
+     * Gewährleistet nicht die Klickbarkeit der einzelnen Elemente
+     * @param map: Karte auf der das Land eingezeichnet werden soll
+     * @param herkunft: Liste mit den hinzuzufügenden Ländern
+     * @param context: Kontext um Fehlertoast anzuzeigen
+     */
     fun addLabel(map: GoogleMap, herkunft: List<Country>?, context: Context) {
         herkunft?.forEach {
             map.addMarker(
@@ -405,29 +481,3 @@ object MapsUtil {
     }
 
 }
-/*
-class MarkerClick(val mMap: GoogleMap, val context: Context, val origin: LatLng):GoogleMap.OnMarkerClickListener{
-    override fun onMarkerClick(marker: Marker?): Boolean {
-        runCatching {
-            mMap.addPolyline(
-                PolylineOptions().add(origin).add(marker?.position).width(10f).color(
-                    Color.DKGRAY
-                ).geodesic(true).clickable(true).zIndex(1.0f)
-            )
-            mMap.addMarker(
-                MarkerOptions()
-                    .position(SphericalUtil.interpolate(origin, marker?.position, 0.5))
-                    .flat(true)
-                    .title("Distanz:")
-                    .snippet(
-                        "${((SphericalUtil.computeDistanceBetween(
-                            origin,
-                            marker?.position
-                        )) / 10).roundToInt().toDouble() / 100} km"
-                    )
-            )
-            Log.d("Marker", "click ${marker?.tag}")
-        }.onSuccess { return true }
-        return true
-    }
-}*/

@@ -4,6 +4,8 @@ package com.example.jetsetfood
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Html
+import android.text.Html.FROM_HTML_MODE_LEGACY
 import android.util.Log
 import android.widget.TextView
 import com.google.android.gms.maps.*
@@ -17,7 +19,7 @@ import kotlinx.coroutines.runBlocking
 
 
 class PrototypeMap : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnPolylineClickListener {
-    //lateinit vars werden in der onMapsReady gesetzt
+    //werden in der onMapsReady und onCreate gesetzt. Da das als erstes geschieht können es lateinits sein
     private lateinit var mMap: GoogleMap
     private lateinit var textView:TextView
     private lateinit var markerManager: MarkerManager
@@ -32,7 +34,7 @@ class PrototypeMap : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     //Um die Lesbarkeit zu verbessern
     private val context=this@PrototypeMap
 
-
+    //Wird bei Aufruf der Activity ausgeführt. Hier wird die Graphical User Interface verknüpft und die Karte initialisiert
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_prototype_map)
@@ -82,7 +84,7 @@ class PrototypeMap : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
         }
 
-
+    //Wird ausgeführt sobald die Karte fertig geladen ist
     override fun onMapReady(googleMap: GoogleMap) {
         //lateinit vars setzen
         mMap = googleMap
@@ -115,8 +117,8 @@ class PrototypeMap : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                     val monthsInGer=ProduceUtil.getSeasonGer(produce)
                     val seasonCalender =
-                        if (monthsInGer.isEmpty()) "${ProduceUtil.convertUmlaut(produce.name, false)} wird leider nicht in Deutschland angebaut"
-                        else "${ProduceUtil.convertUmlaut(produce.name, false)} ist im ${ProduceUtil.makeString(monthsInGer, ", ", " oder ")} aus Deutschland verfügbar"
+                        if (monthsInGer.isEmpty()) " wird leider nicht in Deutschland angebaut"
+                        else " ist im ${ProduceUtil.makeString(monthsInGer, ", ", " oder ")} aus Deutschland verfügbar"
 
                     //Falls Anbaumethoden vorhanden sind, werden diese auf der Karte eingetragen
                     if (!countries.await()?.second.isNullOrEmpty()) {
@@ -132,13 +134,25 @@ class PrototypeMap : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                     //Routen und Marker werden hinzugefügt
                     MapsUtil.addRoutesClustered(countries.await()?.first, context,MapsUtil.germany,markerCollection, polylineCollection, onMarkerClick = context, onPolyClick = context)
+                    textView.setOnClickListener {
+                        if(textView.text.contains(seasonCalender))
+                            //Herkunfts wird im TextView formatiert angezeigt
+                            textView.text= Html.fromHtml(getString(R.string.herkunft,ProduceUtil.monthNames[ProduceUtil.currentMonth],ProduceUtil.convertUmlaut(produce.name, false),ProduceUtil.makeString(
+                                displayCountries,
+                                ", ",
+                                " oder "
+                            )), FROM_HTML_MODE_LEGACY)
+                        else
+                            //Saisonkalender wird im TextView formatiert angezeigt
+                            textView.text = Html.fromHtml(getString(R.string.saisonkalender, ProduceUtil.convertUmlaut(produce.name, false), seasonCalender, ProduceUtil.monthNames[ProduceUtil.currentMonth]),FROM_HTML_MODE_LEGACY)
 
-                    //Saisonkalender wird im TextView angezeigt
-                    textView.text=getString(R.string.saisonkalender,ProduceUtil.monthNames[ProduceUtil.currentMonth],ProduceUtil.convertUmlaut(produce.name, false),ProduceUtil.makeString(
+                    }
+                    //Herkunft wird im TextView formatiert angezeigt
+                    textView.text=Html.fromHtml(getString(R.string.herkunft,ProduceUtil.monthNames[ProduceUtil.currentMonth],ProduceUtil.convertUmlaut(produce.name, false),ProduceUtil.makeString(
                         displayCountries,
                         ", ",
                         " oder "
-                    ), seasonCalender)
+                    )), FROM_HTML_MODE_LEGACY)
                 }
                 else -> Log.e("api", "nebenläufigkeit kaputt ")
             }
