@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:tools = "http://schemas.android.com/tools"
+    android:layout_width = "match_parent"
+    android:layout_height = "match_parent"
+    tools:context = ".Prototype"
+    android:background = "#dde4dd"
+    android:orientation = "vertical">
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/eingabe"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/produce"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/produce_input"
+            android:paddingTop="16dip"/>
+
+        <Button
+            android:id="@+id/click"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/produce_enter"></Button>
+
+        <TextView
+            android:id="@+id/datenblatt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="32dip"
+            android:paddingTop="32dip"
+            android:paddingRight="32dip"
+            android:text="TextView"
+            android:textAlignment="textStart" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+</LinearLayout>
